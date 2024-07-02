@@ -154,10 +154,6 @@ public final class MessageOuterClass {
        */
       ELECTION(0),
       /**
-       * <code>OK = 1;</code>
-       */
-      OK(1),
-      /**
        * <code>COORDINATOR = 2;</code>
        */
       COORDINATOR(2),
@@ -166,13 +162,17 @@ public final class MessageOuterClass {
        */
       EXCLUSION(3),
       /**
-       * <code>ELIMINATED = 4;</code>
+       * <code>OK = 4;</code>
        */
-      ELIMINATED(4),
+      OK(4),
       /**
-       * <code>NO = 5;</code>
+       * <code>ELIMINATED = 5;</code>
        */
-      NO(5),
+      ELIMINATED(5),
+      /**
+       * <code>NO = 6;</code>
+       */
+      NO(6),
       UNRECOGNIZED(-1),
       ;
 
@@ -180,10 +180,6 @@ public final class MessageOuterClass {
        * <code>ELECTION = 0;</code>
        */
       public static final int ELECTION_VALUE = 0;
-      /**
-       * <code>OK = 1;</code>
-       */
-      public static final int OK_VALUE = 1;
       /**
        * <code>COORDINATOR = 2;</code>
        */
@@ -193,13 +189,17 @@ public final class MessageOuterClass {
        */
       public static final int EXCLUSION_VALUE = 3;
       /**
-       * <code>ELIMINATED = 4;</code>
+       * <code>OK = 4;</code>
        */
-      public static final int ELIMINATED_VALUE = 4;
+      public static final int OK_VALUE = 4;
       /**
-       * <code>NO = 5;</code>
+       * <code>ELIMINATED = 5;</code>
        */
-      public static final int NO_VALUE = 5;
+      public static final int ELIMINATED_VALUE = 5;
+      /**
+       * <code>NO = 6;</code>
+       */
+      public static final int NO_VALUE = 6;
 
 
       public final int getNumber() {
@@ -221,11 +221,11 @@ public final class MessageOuterClass {
       public static Protocol forNumber(int value) {
         switch (value) {
           case 0: return ELECTION;
-          case 1: return OK;
           case 2: return COORDINATOR;
           case 3: return EXCLUSION;
-          case 4: return ELIMINATED;
-          case 5: return NO;
+          case 4: return OK;
+          case 5: return ELIMINATED;
+          case 6: return NO;
           default: return null;
         }
       }
@@ -948,9 +948,9 @@ public final class MessageOuterClass {
       "protocol\030\001 \001(\0162 .proto.messages.Message." +
       "Protocol\022\n\n\002id\030\002 \001(\005\022\020\n\010distance\030\003 \001(\001\022-" +
       "\n\ttimestamp\030\004 \001(\0132\032.google.protobuf.Time" +
-      "stamp\"X\n\010Protocol\022\014\n\010ELECTION\020\000\022\006\n\002OK\020\001\022" +
-      "\017\n\013COORDINATOR\020\002\022\r\n\tEXCLUSION\020\003\022\016\n\nELIMI" +
-      "NATED\020\004\022\006\n\002NO\020\005b\006proto3"
+      "stamp\"X\n\010Protocol\022\014\n\010ELECTION\020\000\022\017\n\013COORD" +
+      "INATOR\020\002\022\r\n\tEXCLUSION\020\003\022\006\n\002OK\020\004\022\016\n\nELIMI" +
+      "NATED\020\005\022\006\n\002NO\020\006b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

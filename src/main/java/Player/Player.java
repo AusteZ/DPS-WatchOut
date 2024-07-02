@@ -21,6 +21,7 @@ public class Player {
     private static int listeningPort;
     private static int coordX;
     private static int coordY;
+    public static boolean active = true;
     
     public static int gamePhase;
     public static void main(String[] args) throws IOException, InterruptedException {

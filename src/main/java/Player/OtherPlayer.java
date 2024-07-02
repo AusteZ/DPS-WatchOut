@@ -14,12 +14,7 @@ public class OtherPlayer {
     public int coordY;
     public WriteThread writeThread;
     public ReadThread readThread;
-    public Status status = null;
-    public enum Status{
-        Active,
-        Seeker,
-        Out,
-    }
+    public boolean active = false;
     public synchronized static void addOtherPlayer(OtherPlayer otherPlayer){
         players.add(otherPlayer);
     }

@@ -52,10 +52,6 @@ public class ConnectionThread extends Thread{
                 other.coordY = coords.getCoordY();
                 other.writeThread.start();
                 other.readThread.start();
-                Message message = Message.newBuilder()
-                                .setId(100).setProtocol(Message.Protocol.OK)
-                                .build();
-                other.writeThread.writeMessage(message);
                 OtherPlayer.addOtherPlayer(other);
                 
             }

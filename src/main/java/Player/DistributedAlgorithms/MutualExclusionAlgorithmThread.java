@@ -8,6 +8,7 @@ import proto.messages.MessageOuterClass;
 import proto.messages.MessageOuterClass.Message;
 
 import java.time.Instant;
+import java.util.ArrayList;
 
 public class MutualExclusionAlgorithmThread extends Thread{
     private static boolean permission = false;
@@ -15,7 +16,7 @@ public class MutualExclusionAlgorithmThread extends Thread{
     private static Instant timestamp;
     private static Object lockCounter = new Object();
     private static Object permissionLock = new Object();
-    private static ExclusionQueue queue = new ExclusionQueue();
+    private static ArrayList<WriteThread> queue = new ArrayList<WriteThread>();
     public void run(){
         MutualExclusionAlgorithmThread.timestamp = Instant.now();
 
@@ -35,7 +36,14 @@ public class MutualExclusionAlgorithmThread extends Thread{
                 otherPlayer.writeThread.writeMessage(exclusion);
             }
         }
+        
         synchronized(permissionLock) {
+            if(!Player.active) {
+                while(!queue.isEmpty()) {
+                    sendOk(take());
+                }
+                return;
+            }
             MutualExclusionAlgorithmThread.permission = true;
         }
         synchronized(lockCounter) {
@@ -45,18 +53,22 @@ public class MutualExclusionAlgorithmThread extends Thread{
                 } catch (InterruptedException e) {
                 }
             }
-            new PlayerMove();
         }
+        new PlayerMove();
         timestamp = null;
-        while(true) {
-            sendOk(queue.take());
+        while(!queue.isEmpty()) {
+            sendOk(take());
         }
     }
-    public static boolean getStatusOfPermission() {
+
+    public static boolean ableToBeEliminated(){
         synchronized(permissionLock) {
-            return permission;
+            if(!permission) {
+                Player.active = false;
+            }
+            return !Player.active;
         }
-    } 
+    }
     public static void exclusionRespond(Message message){
         Instant messageTimestamp = Instant.ofEpochSecond(message.getTimestamp().getSeconds(), message.getTimestamp().getNanos());
         OtherPlayer otherPlayer = OtherPlayer.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get();
@@ -64,7 +76,7 @@ public class MutualExclusionAlgorithmThread extends Thread{
             sendOk(otherPlayer.writeThread);
             return;
         }
-        queue.put(otherPlayer.writeThread);
+        put(otherPlayer.writeThread);
     }
     public static void decreaseCounter() {
         synchronized(lockCounter) {
@@ -79,5 +91,12 @@ public class MutualExclusionAlgorithmThread extends Thread{
                 .setId(Player.getId())
                 .build();
         writeThread.writeMessage(ok);
+    }
+    
+    private static synchronized void put(WriteThread writeThread){
+        queue.add(writeThread);
+    }
+    private static synchronized WriteThread take(){
+        return queue.remove(0);
     }
 }

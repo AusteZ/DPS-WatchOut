@@ -1,7 +1,6 @@
 package Player.Threads;
 
 import com.google.protobuf.GeneratedMessageV3;
-import proto.messages.ElectionOuterClass.Election;
 import proto.messages.MessageOuterClass.Message;
 
 import java.io.IOException;

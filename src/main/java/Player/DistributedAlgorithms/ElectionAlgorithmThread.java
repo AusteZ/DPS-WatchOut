@@ -3,6 +3,7 @@ package Player.DistributedAlgorithms;
 import Player.PlayerMove;
 import Player.OtherPlayer;
 import Player.Player;
+import Player.Threads.EliminationThread;
 import proto.messages.MessageOuterClass;
 import proto.messages.MessageOuterClass.Message;
 
@@ -15,6 +16,7 @@ public class ElectionAlgorithmThread extends Thread{
     private static double playerDistance;
     private static boolean ranElection = false;
     private static ElectionAlgorithmThread electionThread = new ElectionAlgorithmThread();
+    private 
     
     public static void initializeThread(){
         if(ranElection)
@@ -45,7 +47,7 @@ public class ElectionAlgorithmThread extends Thread{
                 count++;
                 System.out.println("Election to " + otherPlayer.id);
             } else {
-                otherPlayer.status = OtherPlayer.Status.Active;
+                otherPlayer.active = true;
             }
             i++;
         }
@@ -57,9 +59,14 @@ public class ElectionAlgorithmThread extends Thread{
 
             for (OtherPlayer other : players) {
                 coordinatorRespond(other);
-                
+            }
+            try {
+                electionThread.wait(3000);
+                new EliminationThread().start();
+            } catch (InterruptedException e) {
             }
         }
+        
         
     }
     public static boolean electionProcess(Message message) {
@@ -77,7 +84,7 @@ public class ElectionAlgorithmThread extends Thread{
                 .setId(Player.getId())
                 .build();
         otherPlayer.writeThread.writeMessage(ok);
-        otherPlayer.status = OtherPlayer.Status.Active;
+        otherPlayer.active = true;
         System.out.println("OK to " + otherPlayer.id);
         return true;
     }
@@ -91,6 +98,7 @@ public class ElectionAlgorithmThread extends Thread{
             seekerId = message.getId();
             electionThread.interrupt();
             System.out.println("SEEKER change to " + seekerId);
+            electionThread.interrupt();
             
         } else {
             coordinatorRespond(OtherPlayer.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get());
@@ -108,6 +116,7 @@ public class ElectionAlgorithmThread extends Thread{
                 )
                 .build();
         other.writeThread.writeMessage(coordinator);
+        new MutualExclusionAlgorithmThread().start();
     }
     
 }
