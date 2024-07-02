@@ -1,0 +1,128 @@
+com/example/chat/MessageServiceGrpc.java
+ com.example.chat.MessageServiceGrpc
+ com.example.chat.MessageServiceGrpc$1
+ com.example.chat.MessageServiceGrpc$MessageServiceBlockingStub
+ com.example.chat.MessageServiceGrpc$MessageServiceFutureStub
+ com.example.chat.MessageServiceGrpc$MessageServiceImplBase
+ com.example.chat.MessageServiceGrpc$MessageServiceStub
+ com.example.chat.MessageServiceGrpc$MethodHandlers
+com/example/chat/MessageOuterClass.java
+ com.example.chat.MessageOuterClass
+ com.example.chat.MessageOuterClass$1
+ com.example.chat.MessageOuterClass$Message
+ com.example.chat.MessageOuterClass$Message$1
+ com.example.chat.MessageOuterClass$Message$Builder
+ com.example.chat.MessageOuterClass$MessageOrBuilder
+proto/coordinates/CoordinatesOuterClass.java
+ proto.coordinates.CoordinatesOuterClass
+ proto.coordinates.CoordinatesOuterClass$1
+ proto.coordinates.CoordinatesOuterClass$Coordinates
+ proto.coordinates.CoordinatesOuterClass$Coordinates$1
+ proto.coordinates.CoordinatesOuterClass$Coordinates$Builder
+ proto.coordinates.CoordinatesOuterClass$CoordinatesOrBuilder
+proto/messages/MessageOuterClass.java
+ proto.messages.MessageOuterClass
+ proto.messages.MessageOuterClass$1
+ proto.messages.MessageOuterClass$Message
+ proto.messages.MessageOuterClass$Message$1
+ proto.messages.MessageOuterClass$Message$Builder
+ proto.messages.MessageOuterClass$Message$Protocol
+ proto.messages.MessageOuterClass$Message$Protocol$1
+ proto.messages.MessageOuterClass$MessageOrBuilder
+Administration_Client/RestConnection.java
+ Administration_Client.RestConnection
+Extensions/ClientResponseExtension.java
+ Extensions.ClientResponseExtension
+Simulators/Simulator.java
+ Simulators.Simulator
+Player/Threads/Queue.java
+ Player.Threads.Queue
+Main.java
+ Main
+Player/OtherPlayer.java
+ Player.OtherPlayer
+ Player.OtherPlayer$Status
+Extensions/IntegerExtension.java
+ Extensions.IntegerExtension
+Administration_Server/Services/PlayersService.java
+ Administration_Server.Services.PlayersService
+Beans/PlayerInfo.java
+ Beans.PlayerInfo
+Beans/RegistrationResponse.java
+ Beans.RegistrationResponse
+Administration_Server/AdministrationServer.java
+ Administration_Server.AdministrationServer
+Administration_Client/AdministrationClient.java
+ Administration_Client.AdministrationClient
+Administration_Client/MqttThread.java
+ Administration_Client.MqttThread
+Simulators/Measurement.java
+ Simulators.Measurement
+Player/Threads/WriteThread.java
+ Player.Threads.WriteThread
+Simulators/Buffer.java
+ Simulators.Buffer
+proto/election/ElectionOuterClass.java
+ proto.election.ElectionOuterClass
+ proto.election.ElectionOuterClass$1
+ proto.election.ElectionOuterClass$Election
+ proto.election.ElectionOuterClass$Election$1
+ proto.election.ElectionOuterClass$Election$Builder
+ proto.election.ElectionOuterClass$Election$Protocol
+ proto.election.ElectionOuterClass$Election$Protocol$1
+ proto.election.ElectionOuterClass$ElectionOrBuilder
+Exceptions/UnitializedPlayerException.java
+ Exceptions.UnitializedPlayerException
+Exceptions/PlayerAlreadyExistsException.java
+ Exceptions.PlayerAlreadyExistsException
+Administration_Server/Generator/CoordinateGenerator.java
+ Administration_Server.Generator.CoordinateGenerator
+Simulators/HRSimulator.java
+ Simulators.HRSimulator
+it/ewlab/actor/ActorOuterClass.java
+ it.ewlab.actor.ActorOuterClass
+ it.ewlab.actor.ActorOuterClass$1
+ it.ewlab.actor.ActorOuterClass$Actor
+ it.ewlab.actor.ActorOuterClass$Actor$1
+ it.ewlab.actor.ActorOuterClass$Actor$Builder
+ it.ewlab.actor.ActorOuterClass$Actor$Movie
+ it.ewlab.actor.ActorOuterClass$Actor$Movie$1
+ it.ewlab.actor.ActorOuterClass$Actor$Movie$Builder
+ it.ewlab.actor.ActorOuterClass$Actor$MovieOrBuilder
+ it.ewlab.actor.ActorOuterClass$Actor$Sex
+ it.ewlab.actor.ActorOuterClass$Actor$Sex$1
+ it.ewlab.actor.ActorOuterClass$ActorOrBuilder
+proto/messages/ElectionOuterClass.java
+ proto.messages.ElectionOuterClass
+ proto.messages.ElectionOuterClass$1
+ proto.messages.ElectionOuterClass$Election
+ proto.messages.ElectionOuterClass$Election$1
+ proto.messages.ElectionOuterClass$Election$Builder
+ proto.messages.ElectionOuterClass$Election$Protocol
+ proto.messages.ElectionOuterClass$Election$Protocol$1
+ proto.messages.ElectionOuterClass$ElectionOrBuilder
+ proto.messages.ElectionOuterClass$MutualExclusion
+ proto.messages.ElectionOuterClass$MutualExclusion$1
+ proto.messages.ElectionOuterClass$MutualExclusion$Builder
+ proto.messages.ElectionOuterClass$MutualExclusionOrBuilder
+ proto.messages.ElectionOuterClass$MyMessage
+ proto.messages.ElectionOuterClass$MyMessage$1
+ proto.messages.ElectionOuterClass$MyMessage$Builder
+ proto.messages.ElectionOuterClass$MyMessageOrBuilder
+Beans/Players.java
+ Beans.Players
+Player/TryThread.java
+ Player.TryThread
+Player/Threads/ReadThread.java
+ Player.Threads.ReadThread
+Player/DistributedAlgorithms/MutualExclusionAlgorithmThread.java
+ Player.DistributedAlgorithms.MutualExclusionAlgorithmThread
+Player/Threads/ConnectionThread.java
+ Player.Threads.ConnectionThread
+Player/Player.java
+ Player.Player
+ Player.Player$1
+Player/DistributedAlgorithms/ElectionAlgorithmThread.java
+ Player.DistributedAlgorithms.ElectionAlgorithmThread
+Player/Threads/EvaluateMessagesThread.java
+ Player.Threads.EvaluateMessagesThread

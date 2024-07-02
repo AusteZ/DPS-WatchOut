@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package proto.messages;
+
+message Message {
+  enum Protocol {
+    ELECTION = 0;
+    OK = 1;
+    COORDINATOR = 2;
+    EXCLUSION = 3;
+    ELIMINATED = 4;
+    NO = 5;
+  }
+  Protocol protocol = 1;
+  int32 id = 2;
+  double distance = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
