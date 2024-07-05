@@ -38,17 +38,9 @@ public final class MessageOuterClass {
     double getDistance();
 
     /**
-     * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
+     * <code>optional int64 timestamp = 4;</code>
      */
-    boolean hasTimestamp();
-    /**
-     * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
-     */
-    com.google.protobuf.Timestamp getTimestamp();
-    /**
-     * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
-     */
-    com.google.protobuf.TimestampOrBuilder getTimestampOrBuilder();
+    long getTimestamp();
   }
   /**
    * Protobuf type {@code proto.messages.Message}
@@ -65,6 +57,7 @@ public final class MessageOuterClass {
       protocol_ = 0;
       id_ = 0;
       distance_ = 0D;
+      timestamp_ = 0L;
     }
 
     @java.lang.Override
@@ -108,17 +101,9 @@ public final class MessageOuterClass {
               distance_ = input.readDouble();
               break;
             }
-            case 34: {
-              com.google.protobuf.Timestamp.Builder subBuilder = null;
-              if (timestamp_ != null) {
-                subBuilder = timestamp_.toBuilder();
-              }
-              timestamp_ = input.readMessage(com.google.protobuf.Timestamp.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(timestamp_);
-                timestamp_ = subBuilder.buildPartial();
-              }
+            case 32: {
 
+              timestamp_ = input.readInt64();
               break;
             }
           }
@@ -154,6 +139,10 @@ public final class MessageOuterClass {
        */
       ELECTION(0),
       /**
+       * <code>ELECTION_OK = 1;</code>
+       */
+      ELECTION_OK(1),
+      /**
        * <code>COORDINATOR = 2;</code>
        */
       COORDINATOR(2),
@@ -180,6 +169,10 @@ public final class MessageOuterClass {
        * <code>ELECTION = 0;</code>
        */
       public static final int ELECTION_VALUE = 0;
+      /**
+       * <code>ELECTION_OK = 1;</code>
+       */
+      public static final int ELECTION_OK_VALUE = 1;
       /**
        * <code>COORDINATOR = 2;</code>
        */
@@ -221,6 +214,7 @@ public final class MessageOuterClass {
       public static Protocol forNumber(int value) {
         switch (value) {
           case 0: return ELECTION;
+          case 1: return ELECTION_OK;
           case 2: return COORDINATOR;
           case 3: return EXCLUSION;
           case 4: return OK;
@@ -313,24 +307,12 @@ public final class MessageOuterClass {
     }
 
     public static final int TIMESTAMP_FIELD_NUMBER = 4;
-    private com.google.protobuf.Timestamp timestamp_;
+    private long timestamp_;
     /**
-     * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
+     * <code>optional int64 timestamp = 4;</code>
      */
-    public boolean hasTimestamp() {
-      return timestamp_ != null;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
-     */
-    public com.google.protobuf.Timestamp getTimestamp() {
-      return timestamp_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : timestamp_;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
-     */
-    public com.google.protobuf.TimestampOrBuilder getTimestampOrBuilder() {
-      return getTimestamp();
+    public long getTimestamp() {
+      return timestamp_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -354,8 +336,8 @@ public final class MessageOuterClass {
       if (distance_ != 0D) {
         output.writeDouble(3, distance_);
       }
-      if (timestamp_ != null) {
-        output.writeMessage(4, getTimestamp());
+      if (timestamp_ != 0L) {
+        output.writeInt64(4, timestamp_);
       }
     }
 
@@ -376,9 +358,9 @@ public final class MessageOuterClass {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(3, distance_);
       }
-      if (timestamp_ != null) {
+      if (timestamp_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getTimestamp());
+          .computeInt64Size(4, timestamp_);
       }
       memoizedSize = size;
       return size;
@@ -403,11 +385,8 @@ public final class MessageOuterClass {
           java.lang.Double.doubleToLongBits(getDistance())
           == java.lang.Double.doubleToLongBits(
               other.getDistance()));
-      result = result && (hasTimestamp() == other.hasTimestamp());
-      if (hasTimestamp()) {
-        result = result && getTimestamp()
-            .equals(other.getTimestamp());
-      }
+      result = result && (getTimestamp()
+          == other.getTimestamp());
       return result;
     }
 
@@ -425,10 +404,9 @@ public final class MessageOuterClass {
       hash = (37 * hash) + DISTANCE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           java.lang.Double.doubleToLongBits(getDistance()));
-      if (hasTimestamp()) {
-        hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
-        hash = (53 * hash) + getTimestamp().hashCode();
-      }
+      hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getTimestamp());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -553,12 +531,8 @@ public final class MessageOuterClass {
 
         distance_ = 0D;
 
-        if (timestampBuilder_ == null) {
-          timestamp_ = null;
-        } else {
-          timestamp_ = null;
-          timestampBuilder_ = null;
-        }
+        timestamp_ = 0L;
+
         return this;
       }
 
@@ -584,11 +558,7 @@ public final class MessageOuterClass {
         result.protocol_ = protocol_;
         result.id_ = id_;
         result.distance_ = distance_;
-        if (timestampBuilder_ == null) {
-          result.timestamp_ = timestamp_;
-        } else {
-          result.timestamp_ = timestampBuilder_.build();
-        }
+        result.timestamp_ = timestamp_;
         onBuilt();
         return result;
       }
@@ -639,8 +609,8 @@ public final class MessageOuterClass {
         if (other.getDistance() != 0D) {
           setDistance(other.getDistance());
         }
-        if (other.hasTimestamp()) {
-          mergeTimestamp(other.getTimestamp());
+        if (other.getTimestamp() != 0L) {
+          setTimestamp(other.getTimestamp());
         }
         onChanged();
         return this;
@@ -764,121 +734,30 @@ public final class MessageOuterClass {
         return this;
       }
 
-      private com.google.protobuf.Timestamp timestamp_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> timestampBuilder_;
+      private long timestamp_ ;
       /**
-       * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
+       * <code>optional int64 timestamp = 4;</code>
        */
-      public boolean hasTimestamp() {
-        return timestampBuilder_ != null || timestamp_ != null;
+      public long getTimestamp() {
+        return timestamp_;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
+       * <code>optional int64 timestamp = 4;</code>
        */
-      public com.google.protobuf.Timestamp getTimestamp() {
-        if (timestampBuilder_ == null) {
-          return timestamp_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : timestamp_;
-        } else {
-          return timestampBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
-       */
-      public Builder setTimestamp(com.google.protobuf.Timestamp value) {
-        if (timestampBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          timestamp_ = value;
-          onChanged();
-        } else {
-          timestampBuilder_.setMessage(value);
-        }
-
+      public Builder setTimestamp(long value) {
+        
+        timestamp_ = value;
+        onChanged();
         return this;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
-       */
-      public Builder setTimestamp(
-          com.google.protobuf.Timestamp.Builder builderForValue) {
-        if (timestampBuilder_ == null) {
-          timestamp_ = builderForValue.build();
-          onChanged();
-        } else {
-          timestampBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
-       */
-      public Builder mergeTimestamp(com.google.protobuf.Timestamp value) {
-        if (timestampBuilder_ == null) {
-          if (timestamp_ != null) {
-            timestamp_ =
-              com.google.protobuf.Timestamp.newBuilder(timestamp_).mergeFrom(value).buildPartial();
-          } else {
-            timestamp_ = value;
-          }
-          onChanged();
-        } else {
-          timestampBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
+       * <code>optional int64 timestamp = 4;</code>
        */
       public Builder clearTimestamp() {
-        if (timestampBuilder_ == null) {
-          timestamp_ = null;
-          onChanged();
-        } else {
-          timestamp_ = null;
-          timestampBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
-       */
-      public com.google.protobuf.Timestamp.Builder getTimestampBuilder() {
         
+        timestamp_ = 0L;
         onChanged();
-        return getTimestampFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
-       */
-      public com.google.protobuf.TimestampOrBuilder getTimestampOrBuilder() {
-        if (timestampBuilder_ != null) {
-          return timestampBuilder_.getMessageOrBuilder();
-        } else {
-          return timestamp_ == null ?
-              com.google.protobuf.Timestamp.getDefaultInstance() : timestamp_;
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp timestamp = 4;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-          getTimestampFieldBuilder() {
-        if (timestampBuilder_ == null) {
-          timestampBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                  getTimestamp(),
-                  getParentForChildren(),
-                  isClean());
-          timestamp_ = null;
-        }
-        return timestampBuilder_;
+        return this;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -944,13 +823,13 @@ public final class MessageOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n\rMessage.proto\022\016proto.messages\032\037google/" +
-      "protobuf/timestamp.proto\"\344\001\n\007Message\0222\n\010" +
+      "protobuf/timestamp.proto\"\331\001\n\007Message\0222\n\010" +
       "protocol\030\001 \001(\0162 .proto.messages.Message." +
-      "Protocol\022\n\n\002id\030\002 \001(\005\022\020\n\010distance\030\003 \001(\001\022-" +
-      "\n\ttimestamp\030\004 \001(\0132\032.google.protobuf.Time" +
-      "stamp\"X\n\010Protocol\022\014\n\010ELECTION\020\000\022\017\n\013COORD" +
-      "INATOR\020\002\022\r\n\tEXCLUSION\020\003\022\006\n\002OK\020\004\022\016\n\nELIMI" +
-      "NATED\020\005\022\006\n\002NO\020\006b\006proto3"
+      "Protocol\022\n\n\002id\030\002 \001(\005\022\020\n\010distance\030\003 \001(\001\022\021" +
+      "\n\ttimestamp\030\004 \001(\003\"i\n\010Protocol\022\014\n\010ELECTIO" +
+      "N\020\000\022\017\n\013ELECTION_OK\020\001\022\017\n\013COORDINATOR\020\002\022\r\n" +
+      "\tEXCLUSION\020\003\022\006\n\002OK\020\004\022\016\n\nELIMINATED\020\005\022\006\n\002" +
+      "NO\020\006b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

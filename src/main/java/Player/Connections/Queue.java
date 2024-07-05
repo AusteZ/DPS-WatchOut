@@ -1,6 +1,5 @@
-package Player.Threads;
+package Player.Connections;
 
-import com.google.protobuf.GeneratedMessageV3;
 import proto.messages.MessageOuterClass.Message;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ public class Queue {
     }
     public synchronized Message take() {
         try {
-            if (queue.isEmpty()) {
+            while (queue.isEmpty()) {
                 wait();
             }
         } catch (InterruptedException e) {

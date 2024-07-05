@@ -1,11 +1,9 @@
-package Player.Threads;
+package Player.Connections;
 
-import com.google.protobuf.GeneratedMessageV3;
 import proto.messages.MessageOuterClass.Message;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 
 public class ReadThread extends Thread{
@@ -26,7 +24,6 @@ public class ReadThread extends Thread{
         while(true) {
             try {
                 queue.put(Message.parseDelimitedFrom(inputStream));
-                //System.out.println(queue.take());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

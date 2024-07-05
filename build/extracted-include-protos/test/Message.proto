@@ -7,14 +7,16 @@ package proto.messages;
 message Message {
   enum Protocol {
     ELECTION = 0;
+    ELECTION_OK = 1;
     COORDINATOR = 2;
     EXCLUSION = 3;
     OK = 4;
     ELIMINATED = 5;
     NO = 6;
+    
   }
   Protocol protocol = 1;
   int32 id = 2;
   double distance = 3;
-  google.protobuf.Timestamp timestamp = 4;
+  int64 timestamp = 4;
 }

@@ -1,29 +1,27 @@
-package Player.Threads;
+package Player.Connections;
 
 import Beans.PlayerInfo;
-import Beans.Players;
 import Player.DistributedAlgorithms.ElectionAlgorithmThread;
-import Player.OtherPlayer;
+import Player.Gameplay.OtherPlayer;
 import Player.Player;
 import proto.coordinates.CoordinatesOuterClass.Coordinates;
-import proto.messages.MessageOuterClass.Message;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 
-public class ConnectionThread extends Thread{
+public class ConnectToOtherPlayersThread extends Thread{
     ServerSocket welcomeSocket;
-    boolean startElection = false;
+    static boolean startElection = false;
     Coordinates playerCoordinates;
     private static EvaluateMessagesThread evaluation;
     
-    //private static Queue messageQueue = new Queue();
-    public ConnectionThread(List<PlayerInfo> playerList, int listeningPort){
+    public static boolean getGameStart(){
+        return startElection;
+    }
+    
+    public ConnectToOtherPlayersThread(List<PlayerInfo> playerList, int listeningPort){
         try {
             evaluation = new EvaluateMessagesThread();
             welcomeSocket = new ServerSocket(listeningPort);
@@ -34,15 +32,11 @@ public class ConnectionThread extends Thread{
                     .setListeningPort(Player.getListeningPort())
                     .build();
             evaluation.start();
-            if(playerList.isEmpty())
-                startElection = true;
-            //when playerList is not null
             for(PlayerInfo playerInfo : playerList){
                 OtherPlayer other = new OtherPlayer();
                 
                 other.writeThread = new WriteThread(new Socket(playerInfo.getIpAddress(), playerInfo.getListeningPort()));
                 
-                System.out.println(playerCoordinates);
                 playerCoordinates.writeDelimitedTo(other.writeThread.getOutputStream());
                 other.readThread = new ReadThread(welcomeSocket.accept(), evaluation.getMessageQueue());
                 
@@ -56,10 +50,6 @@ public class ConnectionThread extends Thread{
                 
             }
             startElection = true;
-            if(Player.getId() == 6 || Player.getId() == 7) {
-                ElectionAlgorithmThread.initializeThread();
-                System.out.println("Start election");
-            }
         } catch (IOException e) {}
 
     }
@@ -85,12 +75,15 @@ public class ConnectionThread extends Thread{
                 other.readThread.start();
                 OtherPlayer.addOtherPlayer(other);
                 
-                
+                if(Player.gamePhase > 0 && Player.getId() == ElectionAlgorithmThread.seekerId) {
+                    ElectionAlgorithmThread.coordinatorRespond(other);
+                }
                 
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (Exception e) {
-                System.out.println("error");
+                System.out.println("Problem with socket");
+                break;
             }
         }
     }

@@ -19,6 +19,7 @@ public class MqttThread extends Thread{
             MqttThread.client = new MqttClient(broker, MqttClient.generateClientId());
             MqttConnectOptions connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
+            connOpts.setWill("game/flow","".getBytes(),1,true);;
             MqttThread.client.connect(connOpts);
         } catch(MqttException e){
             e.printStackTrace();
@@ -27,8 +28,11 @@ public class MqttThread extends Thread{
     public void run(){
         MqttMessage message = new MqttMessage(payload.getBytes());
         message.setQos(2);
+        message.setRetained(topic.contains("flow"));
         System.out.println(" Publishing message: " + payload + " ...");
-        try{client.publish(topic, message);}
+        try{
+            client.publish(topic, message);
+        }
         catch(MqttException e){}
         System.out.println(" Message published");
     }

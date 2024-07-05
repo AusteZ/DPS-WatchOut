@@ -1,10 +1,8 @@
-package Player.Threads;
+package Player.Connections;
 
-import com.google.protobuf.GeneratedMessageV3;
 import proto.messages.MessageOuterClass.Message;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -25,7 +23,6 @@ public class WriteThread extends Thread{
         while(true) {
             try {
                 queue.take().writeDelimitedTo(outputStream);
-                //System.out.println("\tSENT OUT--------------------------------------------------");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

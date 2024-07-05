@@ -30,10 +30,12 @@ public class Players {
     }
     public synchronized void RegisterPlayer(PlayerInfo player) throws PlayerAlreadyExistsException, UnitializedPlayerException {
         if(player.getListeningPort() < 0 || player.getId() < 0)
-            throw new UnitializedPlayerException();
+            throw new UnitializedPlayerException("ERROR: There is no (or invalid) listening port and id provided. Ids and Listening ports have to be a whole natural number.");
         for(PlayerInfo p : players) {
             if(p.getId() == player.getId())
-                throw new PlayerAlreadyExistsException(p.getId());
+                throw new PlayerAlreadyExistsException("id " + p.getId());
+            if(p.getListeningPort() == player.getListeningPort())
+                throw new PlayerAlreadyExistsException("listening port " + p.getListeningPort());
         }
         players.add(player);
     }

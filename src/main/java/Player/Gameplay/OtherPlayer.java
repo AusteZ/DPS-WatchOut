@@ -1,10 +1,8 @@
-package Player;
+package Player.Gameplay;
 
-import Player.Threads.ReadThread;
-import Player.Threads.WriteThread;
+import Player.Connections.ReadThread;
+import Player.Connections.WriteThread;
 
-import java.net.Socket;
-import java.security.PublicKey;
 import java.util.ArrayList;
 
 public class OtherPlayer {
@@ -15,10 +13,15 @@ public class OtherPlayer {
     public WriteThread writeThread;
     public ReadThread readThread;
     public boolean active = false;
-    public synchronized static void addOtherPlayer(OtherPlayer otherPlayer){
-        players.add(otherPlayer);
+    public synchronized static void addOtherPlayer(OtherPlayer otherPlayer)
+    { 
+        synchronized (players) {
+            players.add(otherPlayer);
+        }
     }
     public static ArrayList<OtherPlayer> getPlayerList(){
-        return players;
+        synchronized (players) {
+            return new ArrayList<OtherPlayer>(players);
+        }
     }
 }
