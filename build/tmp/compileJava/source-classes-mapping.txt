@@ -18,16 +18,16 @@ proto/messages/MessageOuterClass.java
  proto.messages.MessageOuterClass$MessageOrBuilder
 Player/HRSimulation/HRBuffer.java
  Player.HRSimulation.HRBuffer
-Beans/Players.java
- Beans.Players
+Administration_Client/RestConnection.java
+ Administration_Client.RestConnection
 Beans/MeasurementValue.java
  Beans.MeasurementValue
-Simulators/Measurement.java
- Simulators.Measurement
-Exceptions/PlayerAlreadyExistsException.java
- Exceptions.PlayerAlreadyExistsException
-Simulators/Buffer.java
- Simulators.Buffer
+Player/HRSimulation/HRSendToServerThread.java
+ Player.HRSimulation.HRSendToServerThread
+Player/Connections/ConnectToOtherPlayersThread.java
+ Player.Connections.ConnectToOtherPlayersThread
+Player/Gameplay/PlayerMove.java
+ Player.Gameplay.PlayerMove
 Simulators/Simulator.java
  Simulators.Simulator
 Beans/MeasurementList.java
@@ -36,14 +36,14 @@ Extensions/LongExtension.java
  Extensions.LongExtension
 Administration_Server/MeasurementStorage.java
  Administration_Server.MeasurementStorage
-Exceptions/UnitializedPlayerException.java
- Exceptions.UnitializedPlayerException
-Administration_Server/Generator/CoordinateGenerator.java
- Administration_Server.Generator.CoordinateGenerator
+Player/Connections/RestConnection.java
+ Player.Connections.RestConnection
+Player/Gameplay/EliminationThread.java
+ Player.Gameplay.EliminationThread
 Extensions/IntegerExtension.java
  Extensions.IntegerExtension
-Simulators/HRSimulator.java
- Simulators.HRSimulator
+Player/DistributedAlgorithms/MutualExclusionAlgorithmThread.java
+ Player.DistributedAlgorithms.MutualExclusionAlgorithmThread
 Administration_Server/Services/AnalyticsService.java
  Administration_Server.Services.AnalyticsService
 Administration_Server/Services/PlayersService.java
@@ -66,32 +66,32 @@ Player/HRSimulation/HRCollectValues.java
  Player.HRSimulation.HRCollectValues
 Administration_Client/MqttThread.java
  Administration_Client.MqttThread
-Beans/Timestamps.java
- Beans.Timestamps
-Extensions/ClientResponseExtension.java
- Extensions.ClientResponseExtension
-Player/Gameplay/OtherPlayer.java
- Player.Gameplay.OtherPlayer
-Player/Connections/EvaluateMessagesThread.java
- Player.Connections.EvaluateMessagesThread
-Administration_Client/RestConnection.java
- Administration_Client.RestConnection
-Player/Connections/RestConnection.java
- Player.Connections.RestConnection
-Player/Gameplay/EliminationThread.java
- Player.Gameplay.EliminationThread
-Player/DistributedAlgorithms/MutualExclusionAlgorithmThread.java
- Player.DistributedAlgorithms.MutualExclusionAlgorithmThread
-Player/HRSimulation/HRSendToServerThread.java
- Player.HRSimulation.HRSendToServerThread
-Player/Player.java
- Player.Player
-Player/Connections/ConnectToOtherPlayersThread.java
- Player.Connections.ConnectToOtherPlayersThread
 Player/Connections/MqttConnection.java
  Player.Connections.MqttConnection
  Player.Connections.MqttConnection$1
 Player/DistributedAlgorithms/ElectionAlgorithmThread.java
  Player.DistributedAlgorithms.ElectionAlgorithmThread
-Player/Gameplay/PlayerMove.java
- Player.Gameplay.PlayerMove
+Player/Gameplay/OtherPlayer.java
+ Player.Gameplay.OtherPlayer
+Simulators/Buffer.java
+ Simulators.Buffer
+Exceptions/UnitializedPlayerException.java
+ Exceptions.UnitializedPlayerException
+Beans/Timestamps.java
+ Beans.Timestamps
+Exceptions/PlayerAlreadyExistsException.java
+ Exceptions.PlayerAlreadyExistsException
+Administration_Server/Generator/CoordinateGenerator.java
+ Administration_Server.Generator.CoordinateGenerator
+Player/Connections/EvaluateMessagesThread.java
+ Player.Connections.EvaluateMessagesThread
+Simulators/HRSimulator.java
+ Simulators.HRSimulator
+Beans/Players.java
+ Beans.Players
+Extensions/ClientResponseExtension.java
+ Extensions.ClientResponseExtension
+Player/Player.java
+ Player.Player
+Simulators/Measurement.java
+ Simulators.Measurement
