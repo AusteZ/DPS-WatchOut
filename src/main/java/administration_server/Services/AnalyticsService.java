@@ -1,8 +1,8 @@
 package administration_server.Services;
 
-import Beans.Average;
-import Beans.MeasurementList;
-import Beans.Timestamps;
+import dtos.Average;
+import dtos.MeasurementList;
+import dtos.Timestamps;
 import Extensions.IntegerExtension;
 import administration_server.MeasurementStorage;
 import jakarta.ws.rs.Consumes;

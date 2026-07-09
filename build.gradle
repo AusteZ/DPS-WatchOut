@@ -54,27 +54,11 @@ dependencies {
     // Use this if you run Jersey as an embedded HTTP server from main()
     implementation "org.glassfish.jersey.containers:jersey-container-grizzly2-http:${jerseyVersion}"
 
-
-    // https://mvnrepository.com/artifact/com.sun.jersey/jersey-client
-    implementation 'com.sun.jersey:jersey-client:1.19.1'
-    // https://mvnrepository.com/artifact/com.sun.jersey/jersey-core
-    implementation 'com.sun.jersey:jersey-core:1.19.1'
-    // https://mvnrepository.com/artifact/com.sun.jersey/jersey-json
-    implementation 'com.sun.jersey:jersey-json:1.19.1'
-    // https://mvnrepository.com/artifact/com.sun.jersey/jersey-server
-    implementation 'com.sun.jersey:jersey-server:1.19.1'
-    // https://mvnrepository.com/artifact/com.sun.jersey/jersey-servlet
-    implementation 'com.sun.jersey:jersey-servlet:1.19.1'
-    // https://mvnrepository.com/artifact/com.sun.jersey/jersey-server
-    implementation 'com.sun.jersey:jersey-server:1.2'
     // https://mvnrepository.com/artifact/org.codehaus.jettison/jettison
     implementation 'org.codehaus.jettison:jettison:1.1'
     // https://mvnrepository.com/artifact/javax.ws.rs/jsr311-api
     implementation 'javax.ws.rs:jsr311-api:1.1.1'
     implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
-
-
-
 
     // MQTT Dependencies
     // https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3

@@ -1,9 +1,9 @@
 package administration_client;
 
-import Beans.Average;
-import Beans.PlayerInfo;
-import Beans.Players;
-import Beans.Timestamps;
+import dtos.Average;
+import dtos.PlayerInfo;
+import dtos.Players;
+import dtos.Timestamps;
 import Player.Player;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.core.UriBuilder;

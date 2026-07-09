@@ -1,8 +1,5 @@
-package Beans;
+package dtos;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class Average {
     private double average;
     public Average() {}

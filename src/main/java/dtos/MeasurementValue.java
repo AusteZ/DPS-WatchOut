@@ -1,8 +1,5 @@
-package Beans;
+package dtos;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class MeasurementValue {
     private long timestamp;
     private double value;

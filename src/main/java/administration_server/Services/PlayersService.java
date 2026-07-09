@@ -1,8 +1,8 @@
 package administration_server.Services;
 
-import Beans.PlayerInfo;
-import Beans.Players;
-import Beans.RegistrationResponse;
+import dtos.PlayerInfo;
+import dtos.Players;
+import dtos.RegistrationResponse;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;

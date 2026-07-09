@@ -1,7 +1,7 @@
 package administration_server;
 
-import Beans.MeasurementList;
-import Beans.MeasurementValue;
+import dtos.MeasurementList;
+import dtos.MeasurementValue;
 import Exceptions.UnitializedPlayerException;
 
 import java.util.ArrayList;
