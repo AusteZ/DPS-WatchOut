@@ -1,30 +1,28 @@
 package administration_server;
 
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import administration_server.helper.BinderHelper;
+import administration_server.handler.ReceivingServerHandler;
+import administration_server.userinterface.ConsoleUserInterface;
+import administration_server.userinterface.UserInterface;
+import library.ApplicationResourcesHandler;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.ServerProperties;
 
 import java.io.IOException;
-import java.net.URI;
 
-public class AdministrationServer {
-    private static final String HOST = "localhost";
-    private static final int PORT = 8080;
+public final class AdministrationServer {
 
-    public static void main(String[] args) throws IOException {
-        URI baseUri = URI.create("http://" + HOST + ":" + PORT + "/");
+    public static void main(String[] ignoredArgs) throws IOException {
+        ReceivingServerHandler serverService = getServer();
+        serverService.start();
 
-        ResourceConfig config = new ResourceConfig()
-                .packages("administration_server.Services")
-                .property(ServerProperties.WADL_FEATURE_DISABLE, true);
+        UserInterface userInterface = ConsoleUserInterface.getInstance();
+        userInterface.runInterface(serverService);
+    }
 
-        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config);
-
-        System.out.println("Server running at " + baseUri);
-        System.out.println("Press Enter to stop...");
-        System.in.read();
-
-        server.shutdownNow();
+    private static ReceivingServerHandler getServer() {
+        String host = ApplicationResourcesHandler.getProperty("server.host");
+        int port = Integer.parseInt(ApplicationResourcesHandler.getProperty("server.port"));
+        ResourceConfig config = BinderHelper.createConfig();
+        return ReceivingServerHandler.getInstance(host, port, config);
     }
 }

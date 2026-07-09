@@ -1,6 +1,6 @@
 package Player.HRSimulation;
 
-import dtos.MeasurementList;
+import dtos.MeasurementListDto;
 import dtos.MeasurementValue;
 import Player.Player;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,13 +36,13 @@ public class HRSendToServerThread extends Thread {
                     continue;
                 }
 
-                MeasurementList measurementList = new MeasurementList(
+                MeasurementListDto measurementListDto = new MeasurementListDto(
                         Player.getId(),
                         System.currentTimeMillis(),
                         list
                 );
 
-                String requestBody = objectMapper.writeValueAsString(measurementList);
+                String requestBody = objectMapper.writeValueAsString(measurementListDto);
 
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(serverAddress + POST_PATH))

@@ -1,10 +1,10 @@
-package administration_server.Services;
+package administration_server.controller;
 
-import dtos.Average;
-import dtos.MeasurementList;
+import administration_server.service.AverageCalculationService;
+import administration_server.storage.MeasurementStorage;
+import dtos.AverageDto;
+import dtos.MeasurementListDto;
 import dtos.Timestamps;
-import Extensions.IntegerExtension;
-import administration_server.MeasurementStorage;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -14,27 +14,29 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 
 @Path("analytics")
-public class AnalyticsService {
+public class AnalyticsController {
+    private final AverageCalculationService averageCalculationService;
+
+    public AnalyticsController(AverageCalculationService averageCalculationService) {
+        this.averageCalculationService =  averageCalculationService;
+    }
+
     @Path("postmeasurements")
     @POST
     @Consumes({"application/json", "application/xml"})
     @Produces({"application/json", "application/xml"})
-    public Response postMeasurements(MeasurementList ml) {
+    public Response postMeasurements(MeasurementListDto ml) {
         MeasurementStorage.addMeasurements(ml);
         return Response.ok().build();
     }
 
-    @Path("getlastnmeasurements/{id}/{n}")
+    @Path("getlastnmeasurements/{playerId}/{lastMeasurementCount}")
     @GET
     @Produces({"application/json", "application/xml"})
-    public Response getLastNMeasurements(@PathParam("id") String idString, @PathParam("n") String nValues) {
-        int n = IntegerExtension.tryParseInt(nValues);
-        int id = IntegerExtension.tryParseInt(idString);
-
+    public Response getLastNMeasurements(@PathParam("playerId") int playerId, @PathParam("lastMeasurementCount") int lastMeasurementCount) {
         try {
-            double average = MeasurementStorage.getLastNMeasurements(id, n);
-            Average response = new Average();
-            response.setAverage(average);
+            double average = averageCalculationService.calculateLatestMeasurementAverage(playerId, lastMeasurementCount);
+            AverageDto response = new AverageDto(average);
             return Response.ok(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -45,13 +47,12 @@ public class AnalyticsService {
     @POST
     @Produces({"application/json", "application/xml"})
     public Response getMeasurementsBetweenTimestamps(Timestamps timestamps) {
-        double average = MeasurementStorage.getMeasurementsBetweenTimestamps(timestamps.getTimestamp1(), timestamps.getTimestamp2());
-        Average response = new Average();
-        response.setAverage(average);
+        double average = averageCalculationService.calculateMeasurementAverageBetweenTimestamps(timestamps.getTimestamp1(), timestamps.getTimestamp2());
         if (average <= 0) {
             return Response.status(Response.Status.BAD_REQUEST).entity("No values between the two timestamps").build();
         }
+
+        AverageDto response = new AverageDto(average);
         return Response.ok(response).build();
     }
-
 }

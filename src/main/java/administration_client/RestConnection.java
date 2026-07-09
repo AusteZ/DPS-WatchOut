@@ -1,6 +1,6 @@
 package administration_client;
 
-import dtos.Average;
+import dtos.AverageDto;
 import dtos.PlayerInfo;
 import dtos.Players;
 import dtos.Timestamps;
@@ -79,8 +79,8 @@ public class RestConnection {
             );
 
             if (response.statusCode() == 200) {
-                Average averageResponse = objectMapper.readValue(response.body(), Average.class);
-                Double average = averageResponse.getAverage();
+                AverageDto averageDtoResponse = objectMapper.readValue(response.body(), AverageDto.class);
+                Double average = averageDtoResponse.average();
 
                 System.out.println(
                         "The heart rate average between "
@@ -122,8 +122,8 @@ public class RestConnection {
             System.out.println(response);
 
             if (response.statusCode() == 200) {
-                Average averageResponse = objectMapper.readValue(response.body(), Average.class);
-                Double average = averageResponse.getAverage();
+                AverageDto averageDtoResponse = objectMapper.readValue(response.body(), AverageDto.class);
+                Double average = averageDtoResponse.average();
 
                 System.out.println(
                         "The " + n + " last heart rate average of " + id + " is " + average
