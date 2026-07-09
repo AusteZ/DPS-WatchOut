@@ -1,4 +1,4 @@
-package administrationclient;
+package administration_client;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;

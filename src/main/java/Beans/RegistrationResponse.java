@@ -1,6 +1,6 @@
 package Beans;
 
-import Administration_Server.Generator.CoordinateGenerator;
+import administration_server.Generator.CoordinateGenerator;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

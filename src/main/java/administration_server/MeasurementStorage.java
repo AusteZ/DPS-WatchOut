@@ -1,4 +1,4 @@
-package Administration_Server;
+package administration_server;
 
 import Beans.MeasurementList;
 import Beans.MeasurementValue;

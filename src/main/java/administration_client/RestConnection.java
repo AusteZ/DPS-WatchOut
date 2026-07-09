@@ -1,4 +1,4 @@
-package administrationclient;
+package administration_client;
 
 import Beans.Average;
 import Beans.PlayerInfo;

@@ -1,4 +1,4 @@
-package Administration_Server.Generator;
+package administration_server.Generator;
 
 import java.util.Random;
 

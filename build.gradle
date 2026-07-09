@@ -48,12 +48,12 @@ dependencies {
     implementation "org.glassfish.jersey.media:jersey-media-json-jackson:${jerseyVersion}"
     implementation "org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}"
 
-    /*// Use this if you run Jersey in a servlet container / WAR
+    // Use this if you run Jersey in a servlet container / WAR
     implementation "org.glassfish.jersey.containers:jersey-container-servlet-core:${jerseyVersion}"
 
     // Use this if you run Jersey as an embedded HTTP server from main()
     implementation "org.glassfish.jersey.containers:jersey-container-grizzly2-http:${jerseyVersion}"
-    */
+
 
     // https://mvnrepository.com/artifact/com.sun.jersey/jersey-client
     implementation 'com.sun.jersey:jersey-client:1.19.1'
