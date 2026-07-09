@@ -1,6 +1,6 @@
 package dtos;
 
-import administration_server.Generator.CoordinateGenerator;
+import library.Generator.CoordinateGenerator;
 
 import java.util.List;
 
