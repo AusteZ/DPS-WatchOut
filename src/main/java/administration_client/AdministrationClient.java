@@ -1,8 +1,7 @@
-package Administration_Client;
+package administration_client;
 
 import Extensions.IntegerExtension;
 import Extensions.LongExtension;
-import io.opencensus.common.ServerStatsFieldEnums;
 
 import java.util.Scanner;
 

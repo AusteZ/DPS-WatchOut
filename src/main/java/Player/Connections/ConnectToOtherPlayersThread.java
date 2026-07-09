@@ -1,6 +1,6 @@
 package Player.Connections;
 
-import Beans.PlayerInfo;
+import dtos.PlayerInfo;
 import Player.DistributedAlgorithms.ElectionAlgorithmThread;
 import Player.Gameplay.OtherPlayer;
 import Player.Player;

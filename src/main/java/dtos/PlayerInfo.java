@@ -1,10 +1,5 @@
-package Beans;
+package dtos;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.List;
-
-@XmlRootElement
 public class PlayerInfo {
     private int id;
     private int listeningPort;

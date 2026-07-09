@@ -1,11 +1,14 @@
-package Administration_Server.Services;
+package administration_server.Services;
 
-import Beans.PlayerInfo;
-import Beans.Players;
-import Beans.RegistrationResponse;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
+import dtos.PlayerInfo;
+import dtos.Players;
+import dtos.RegistrationResponse;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Response;
 
 @Path("players")
 public class PlayersService {
@@ -26,7 +29,7 @@ public class PlayersService {
     @Path("list")
     @GET
     @Produces({"application/json", "application/xml"})
-    public Response getPlayerList(){
+    public Response getPlayerList() {
         Players players = Players.getInstance();
         return Response.ok(players).build();
     }

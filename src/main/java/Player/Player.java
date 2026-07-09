@@ -1,20 +1,11 @@
 package Player;
 
-import Beans.Players;
 import Extensions.IntegerExtension;
 import Player.Connections.MqttConnection;
 import Player.Connections.RestConnection;
-import Player.DistributedAlgorithms.ElectionAlgorithmThread;
 import Player.HRSimulation.HRCollectValues;
 import Player.Connections.ConnectToOtherPlayersThread;
-import Beans.PlayerInfo;
-import Beans.RegistrationResponse;
-import Extensions.ClientResponseExtension;
-
-import Player.HRSimulation.HRSendToServerThread;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import org.eclipse.paho.client.mqttv3.*;
+import dtos.PlayerInfo;
 
 import java.io.IOException;
 import java.util.List;

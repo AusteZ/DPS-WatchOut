@@ -1,6 +1,6 @@
 package Player.HRSimulation;
 
-import Beans.MeasurementValue;
+import dtos.MeasurementValue;
 import Simulators.Buffer;
 import Simulators.HRSimulator;
 import Simulators.Measurement;
