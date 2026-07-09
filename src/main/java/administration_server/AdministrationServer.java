@@ -3,6 +3,7 @@ package administration_server;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
 
 import java.io.IOException;
 import java.net.URI;
@@ -15,7 +16,8 @@ public class AdministrationServer {
         URI baseUri = URI.create("http://" + HOST + ":" + PORT + "/");
 
         ResourceConfig config = new ResourceConfig()
-                .packages("administration_server.Services");
+                .packages("administration_server.Services")
+                .property(ServerProperties.WADL_FEATURE_DISABLE, true);
 
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config);
 
