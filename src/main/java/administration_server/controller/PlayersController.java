@@ -19,7 +19,7 @@ public class PlayersController {
     public Response registerPlayer(PlayerInfo player) {
         RegistrationResponse response = new RegistrationResponse();
         try {
-            Players.getInstance().RegisterPlayer(player);
+            Players.getInstance().registerPlayer(player);
             return Response.ok(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();

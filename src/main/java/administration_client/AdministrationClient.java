@@ -1,126 +1,49 @@
 package administration_client;
 
-import Extensions.IntegerExtension;
-import Extensions.LongExtension;
+import administration_client.client.AdminClient;
+import administration_client.service.MqttService;
+import administration_client.userinterface.ConsoleUserInterface;
+import administration_client.userinterface.UserInterface;
+import administration_client.userinterface.UserInterfaceBridge;
+import administration_client.userinterface.UserInterfaceBridgeImpl;
+import library.ApplicationResourcesHandler;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
-import java.util.Scanner;
+import java.net.http.HttpClient;
 
 public class AdministrationClient {
-    private static final int PORT = 8080;
-    private static final String HOST = "localhost";
-    private boolean gameStarted = false;
-    private MqttThread mqttThread;
-    
-    public static void main(String[] args) {
-        RestConnection.setConnection("localhost", 8080);
-        MqttThread.setConnection("tcp://localhost:1883");
-        new AdministrationClient().cosoleInterface();
-    }
-    public void cosoleInterface(){
-        System.out.println("Administration Client is running");
-        Scanner scanner = new Scanner(System.in);
 
-        while(true) {
-            printChoices();
-            readChoice(scanner);
-        }
-    }
-    private void printChoices() {
-        System.out.println("Choose:");
-        System.out.println("1. Print the list of players");
-        if(!gameStarted)
-            System.out.println("2. Start the game");
-        else {
-            System.out.println("2. Send message to players");
-            System.out.println("3. Compute last n heart rate values of a player.");
-            System.out.println("4. Compute the average heart rate values of all players between time1 and time2");
-        }
-    }
-    private void readChoice(Scanner scanner){
-        Integer value = 0;
-        while(true) {
-            value = IntegerExtension.tryParseInt(scanner.nextLine());
-            if (value == null) {
-                System.out.println("Please enter a number");
-                continue;
-            }
-            if (value < 1 || (value > 3 && !gameStarted) || value > 5) {
-                System.out.println("Please enter a number in the list");
-                continue;
-            }
-            break;
-        }
-        
-        switch(value) {
-            case 1:
-                RestConnection.getPlayers();
-                break;
-            case 2:
-                if (!gameStarted) {
-                    (new MqttThread("Start game", "game/flow")).start();
-                    gameStarted = true;
-                    break;
-                }
-                String customMessage = scanner.nextLine();
-                (new MqttThread(customMessage, "game/messages")).start();
-                break;
-            case 3:
-                Integer n, id;
-                while(true) {
-                    System.out.println("Please enter the id:");
-                    id = IntegerExtension.tryParseInt(scanner.nextLine());
-                    
-                    
-                    if(id == null || id <= 0) {
-                        System.out.println("Value has to be positive number (non-zero)");
-                        continue;
-                    }
-                    break;
-                }
-                while(true) {
-                    System.out.println("Please enter the n value:");
-                    n = IntegerExtension.tryParseInt(scanner.nextLine());
+    public static void main(String[] ignoredArgs) throws MqttException {
+        AdminClient adminClient = getAdminClient();
+        MqttService mqttService = getMqttService();
 
-                    if(n == null || n <= 0) {
-                        System.out.println("Value has to be positive number (non-zero)");
-                        continue;
-                    }
-                    break;
-                }
-                RestConnection.getLastNMeasurements(id,n);
-                
-                break;
-            case 4:
-                Long time1, time2;
-                while(true) {
-                    while(true) {
-                        System.out.println("Please enter the time1:");
-                        time1 = LongExtension.tryParseLong(scanner.nextLine());
-                        
-                        if(time1 == null || time1 < 0) {
-                            System.out.println("Value has to be positive number");
-                            continue;
-                        }
-                        break;
-                    }
-                    while(true) {
-                        System.out.println("Please enter the time2 value:");
-                        time2 = LongExtension.tryParseLong(scanner.nextLine());
+        UserInterfaceBridge userInterfaceBridge = new UserInterfaceBridgeImpl(adminClient, mqttService);
+        UserInterface userInterface = ConsoleUserInterface.getInstance(userInterfaceBridge);
 
-                        if(time2 == null || time2 <= 0) {
-                            System.out.println("Value has to be positive number");
-                            continue;
-                        }
-                        break;
-                    }
-                    if(time1 > time2) {
-                        System.out.println("time1 has to be earlier than time2");
-                        continue;
-                    }
-                    break;
-                }
-                RestConnection.getMeasurementsBetweenTimestamps(time1,time2);
-                break;
-        }
+        userInterface.runInterface();
     }
+
+    private static AdminClient getAdminClient() {
+        String url = ApplicationResourcesHandler.getProperty("server.url");
+        HttpClient httpClient = HttpClient.newBuilder().build();
+        return new AdminClient(url, httpClient);
+    }
+
+    private static MqttService getMqttService() throws MqttException {
+        MqttClient mqttClient = getMqttClient();
+        return new MqttService(mqttClient);
+    }
+
+    private static MqttClient getMqttClient() throws MqttException {
+        String broker = ApplicationResourcesHandler.getProperty("mqtt.broker");
+        MqttClient mqttClient = new MqttClient(broker, MqttClient.generateClientId());
+        MqttConnectOptions connOpts = new MqttConnectOptions();
+        connOpts.setCleanSession(true);
+        connOpts.setWill("game/flow", "".getBytes(), 1, true);
+        mqttClient.connect(connOpts);
+        return mqttClient;
+    }
+
 }
