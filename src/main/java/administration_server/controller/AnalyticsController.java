@@ -4,7 +4,7 @@ import administration_server.service.AverageCalculationService;
 import administration_server.storage.MeasurementStorage;
 import dtos.AverageDto;
 import dtos.MeasurementListDto;
-import dtos.Timestamps;
+import dtos.TimestampsDto;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -46,8 +46,8 @@ public class AnalyticsController {
     @Path("getvaluesbetweentimestamps")
     @POST
     @Produces({"application/json", "application/xml"})
-    public Response getMeasurementsBetweenTimestamps(Timestamps timestamps) {
-        double average = averageCalculationService.calculateMeasurementAverageBetweenTimestamps(timestamps.getTimestamp1(), timestamps.getTimestamp2());
+    public Response getMeasurementsBetweenTimestamps(TimestampsDto timestampsDto) {
+        double average = averageCalculationService.calculateMeasurementAverageBetweenTimestamps(timestampsDto.startTimestamp(), timestampsDto.endTimestamp());
         if (average <= 0) {
             return Response.status(Response.Status.BAD_REQUEST).entity("No values between the two timestamps").build();
         }

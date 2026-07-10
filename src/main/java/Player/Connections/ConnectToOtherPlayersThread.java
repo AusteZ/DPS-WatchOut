@@ -35,7 +35,7 @@ public class ConnectToOtherPlayersThread extends Thread{
             for(PlayerInfo playerInfo : playerList){
                 OtherPlayer other = new OtherPlayer();
                 
-                other.writeThread = new WriteThread(new Socket(playerInfo.getIpAddress(), playerInfo.getListeningPort()));
+                other.writeThread = new WriteThread(new Socket(playerInfo.ipAddress(), playerInfo.listeningPort()));
                 
                 playerCoordinates.writeDelimitedTo(other.writeThread.getOutputStream());
                 other.readThread = new ReadThread(welcomeSocket.accept(), evaluation.getMessageQueue());
