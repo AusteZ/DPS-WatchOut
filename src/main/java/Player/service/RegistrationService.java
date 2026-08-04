@@ -1,6 +1,5 @@
 package Player.service;
 
-import Player.Connections.MqttConnection;
 import Player.client.SocketClient;
 import Player.HRSimulation.HRCollectValues;
 import Player.client.AdminServerClient;
@@ -38,8 +37,6 @@ public final class RegistrationService {
 
         registerWithOtherPlayers(self, response.getPlayerList());
         acceptNewRegistrations();
-
-        MqttConnection.registerToMqtt();
 
         (new HRCollectValues()).start();
         GameState.setGamePhase(GamePhase.REGISTERED);
