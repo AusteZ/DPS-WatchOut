@@ -2,32 +2,33 @@ package Player.Gameplay;
 
 import Player.DistributedAlgorithms.ElectionAlgorithmThread;
 import Player.PlayerApplication;
+import Player.repository.OtherPlayerRepository;
 import proto.messages.MessageOuterClass.Message;
 
 public class EliminationThread extends Thread {
 
-    public void run(){
-        
+    public void run() {
+
         double minDistance = Double.MAX_VALUE;
-        OtherPlayer other = new OtherPlayer();
+        OtherPlayerRepository other = new OtherPlayerRepository();
         int playerCount = 0;
         System.out.println("I am the seeker");
-        
-        while(true) {
+
+        while (true) {
             minDistance = Double.MAX_VALUE;
             playerCount = 0;
-            for(OtherPlayer otherPlayer : OtherPlayer.getPlayerList()) {
-                if(otherPlayer.active && otherPlayer.id != other.id) {
-                    double distance = PlayerMove.distanceToAnotherPlayer(otherPlayer.coordX, otherPlayer.coordY);
+            for (OtherPlayerRepository otherPlayerRepository : OtherPlayerRepository.getPlayerList()) {
+                if (otherPlayerRepository.active && otherPlayerRepository.id != other.id) {
+                    double distance = PlayerMove.distanceToAnotherPlayer(otherPlayerRepository.coordX, otherPlayerRepository.coordY);
                     if (minDistance > distance) {
                         minDistance = distance;
-                        other = otherPlayer;
+                        other = otherPlayerRepository;
                     }
                     playerCount++;
                 }
-                
+
             }
-            if(playerCount == 0) {
+            if (playerCount == 0) {
                 break;
             }
             System.out.println("I am after " + other.id);
@@ -37,29 +38,32 @@ public class EliminationThread extends Thread {
         }
         System.out.println("Game over (new players can join, but seeker will not look for them anymore).");
     }
-    public static void wasEliminated(){
+
+    public static void wasEliminated() {
         Message eliminated = Message.newBuilder()
                 .setProtocol(Message.Protocol.ELIMINATED)
                 .setId(PlayerApplication.getId())
                 .build();
-        for(OtherPlayer otherPlayer : OtherPlayer.getPlayerList()) {
-            otherPlayer.writeThread.writeMessage(eliminated);
+        for (OtherPlayerRepository otherPlayerRepository : OtherPlayerRepository.getPlayerList()) {
+            otherPlayerRepository.writeThread.writeMessage(eliminated);
         }
     }
-    public static void cannotBeEliminated(){
+
+    public static void cannotBeEliminated() {
         Message no = Message.newBuilder()
                 .setProtocol(Message.Protocol.NO)
                 .setId(PlayerApplication.getId())
                 .build();
-        OtherPlayer otherPlayer = OtherPlayer.getPlayerList().stream().filter(other -> other.id == ElectionAlgorithmThread.seekerId).findFirst().get();
-        otherPlayer.writeThread.writeMessage(no);
+        OtherPlayerRepository otherPlayerRepository = OtherPlayerRepository.getPlayerList().stream().filter(other -> other.id == ElectionAlgorithmThread.seekerId).findFirst().get();
+        otherPlayerRepository.writeThread.writeMessage(no);
     }
-    public static void eliminate(OtherPlayer otherPlayer){
+
+    public static void eliminate(OtherPlayerRepository otherPlayerRepository) {
         Message eliminated = Message.newBuilder()
                 .setProtocol(Message.Protocol.ELIMINATED)
                 .setId(PlayerApplication.getId())
                 .build();
-        otherPlayer.writeThread.writeMessage(eliminated);
-        
+        otherPlayerRepository.writeThread.writeMessage(eliminated);
+
     }
 }

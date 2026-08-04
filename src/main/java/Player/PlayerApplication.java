@@ -1,6 +1,7 @@
 package Player;
 
 import Player.client.AdminServerClient;
+import Player.repository.OtherPlayerRepository;
 import Player.service.RegistrationService;
 import Player.userinterface.CliController;
 import library.ApplicationResourcesHandler;
@@ -17,7 +18,8 @@ public class PlayerApplication {
 
     public static void main(String[] ignoredArgs) throws Exception {
         AdminServerClient adminServerClient = createAdminServerClient();
-        RegistrationService registrationService = new RegistrationService(adminServerClient);
+        OtherPlayerRepository otherPlayerRepository = new OtherPlayerRepository();
+        RegistrationService registrationService = new RegistrationService(adminServerClient, otherPlayerRepository);
         CliController cliController = new CliController(registrationService);
         cliController.run();
     }

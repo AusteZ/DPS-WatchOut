@@ -1,9 +1,9 @@
 package Player.Connections;
 
-import dtos.PlayerInfo;
 import Player.DistributedAlgorithms.ElectionAlgorithmThread;
-import Player.Gameplay.OtherPlayer;
 import Player.PlayerApplication;
+import Player.repository.OtherPlayerRepository;
+import dtos.PlayerInfo;
 import proto.coordinates.CoordinatesOuterClass.Coordinates;
 
 import java.io.IOException;
@@ -12,17 +12,17 @@ import java.net.Socket;
 import java.util.List;
 
 //TODO: have threads for each registration, not the whole thing
-public class ConnectToOtherPlayersThread extends Thread{
+public class ConnectToOtherPlayersThread extends Thread {
     ServerSocket welcomeSocket;
     static boolean startElection = false;
     Coordinates playerCoordinates;
     private static EvaluateMessagesThread evaluation;
-    
-    public static boolean getGameStart(){
+
+    public static boolean getGameStart() {
         return startElection;
     }
-    
-    public ConnectToOtherPlayersThread(List<PlayerInfo> playerList, int listeningPort){
+
+    public ConnectToOtherPlayersThread(List<PlayerInfo> playerList, int listeningPort) {
         try {
             evaluation = new EvaluateMessagesThread();
             welcomeSocket = new ServerSocket(listeningPort);
@@ -33,38 +33,39 @@ public class ConnectToOtherPlayersThread extends Thread{
                     .setListeningPort(PlayerApplication.getListeningPort())
                     .build();
             evaluation.start();
-            for(PlayerInfo playerInfo : playerList){
-                OtherPlayer other = new OtherPlayer();
-                
+            for (PlayerInfo playerInfo : playerList) {
+                OtherPlayerRepository other = new OtherPlayerRepository();
+
                 other.writeThread = new WriteThread(new Socket(playerInfo.ipAddress(), playerInfo.listeningPort()));
-                
+
                 playerCoordinates.writeDelimitedTo(other.writeThread.getOutputStream());
                 other.readThread = new ReadThread(welcomeSocket.accept(), evaluation.getMessageQueue());
-                
+
                 Coordinates coords = Coordinates.parseDelimitedFrom(other.readThread.getInputStream());
                 other.id = coords.getId();
                 other.coordX = coords.getCoordX();
                 other.coordY = coords.getCoordY();
                 other.writeThread.start();
                 other.readThread.start();
-                OtherPlayer.addOtherPlayer(other);
-                
+                OtherPlayerRepository.addOtherPlayer(other);
+
             }
             startElection = true;
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
 
     }
-    public void run(){
-        
-        while(true){
+
+    public void run() {
+        while (true) {
             try {
                 Socket connectionSocket = welcomeSocket.accept();
                 startElection = false;
-                OtherPlayer other = new OtherPlayer();
+                OtherPlayerRepository other = new OtherPlayerRepository();
                 other.readThread = new ReadThread(connectionSocket, evaluation.getMessageQueue());
 
                 Coordinates coords = Coordinates.parseDelimitedFrom(other.readThread.getInputStream());
-                
+
                 other.id = coords.getId();
                 other.coordX = coords.getCoordX();
                 other.coordY = coords.getCoordY();
@@ -74,12 +75,12 @@ public class ConnectToOtherPlayersThread extends Thread{
                 playerCoordinates.writeDelimitedTo(other.writeThread.getOutputStream());
                 other.writeThread.start();
                 other.readThread.start();
-                OtherPlayer.addOtherPlayer(other);
-                
-                if(PlayerApplication.gamePhase > 0 && PlayerApplication.getId() == ElectionAlgorithmThread.seekerId) {
+                OtherPlayerRepository.addOtherPlayer(other);
+
+                if (PlayerApplication.gamePhase > 0 && PlayerApplication.getId() == ElectionAlgorithmThread.seekerId) {
                     ElectionAlgorithmThread.coordinatorRespond(other);
                 }
-                
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (Exception e) {

@@ -1,9 +1,9 @@
 package Player.DistributedAlgorithms;
 
-import Player.Gameplay.PlayerMove;
-import Player.Gameplay.OtherPlayer;
-import Player.PlayerApplication;
 import Player.Gameplay.EliminationThread;
+import Player.Gameplay.PlayerMove;
+import Player.PlayerApplication;
+import Player.repository.OtherPlayerRepository;
 import proto.messages.MessageOuterClass;
 import proto.messages.MessageOuterClass.Message;
 
@@ -29,35 +29,35 @@ public class ElectionAlgorithmThread extends Thread {
     public void run() {
         int count = 0;
         playerDistance = PlayerMove.distanceToHomeBase(PlayerApplication.getCoordX(), PlayerApplication.getCoordY());
-        ArrayList<OtherPlayer> players = OtherPlayer.getPlayerList();
+        ArrayList<OtherPlayerRepository> players = OtherPlayerRepository.getPlayerList();
         MessageOuterClass.Message election = MessageOuterClass.Message.newBuilder()
                 .setProtocol(MessageOuterClass.Message.Protocol.ELECTION)
                 .setId(PlayerApplication.getId())
                 .setDistance(playerDistance)
                 .build();
-        OtherPlayer otherPlayer;
+        OtherPlayerRepository otherPlayerRepository;
         double otherDistance;
         for (int i = 0; i < players.size() && !electionThread.isInterrupted(); ++i) {
-            otherPlayer = players.get(i);
-            otherDistance = PlayerMove.distanceToHomeBase(otherPlayer.coordX, otherPlayer.coordY);
-            if (otherDistance > playerDistance || (otherDistance == playerDistance && otherPlayer.id > PlayerApplication.getId())) {
-                otherPlayer.writeThread.writeMessage(election);
+            otherPlayerRepository = players.get(i);
+            otherDistance = PlayerMove.distanceToHomeBase(otherPlayerRepository.coordX, otherPlayerRepository.coordY);
+            if (otherDistance > playerDistance || (otherDistance == playerDistance && otherPlayerRepository.id > PlayerApplication.getId())) {
+                otherPlayerRepository.writeThread.writeMessage(election);
                 count++;
-                System.out.println("Election to " + otherPlayer.id);
+                System.out.println("Election to " + otherPlayerRepository.id);
             } else {
-                otherPlayer.active = true;
+                otherPlayerRepository.active = true;
             }
         }
         System.out.println("Distance: " + playerDistance + " and id: " + PlayerApplication.getId());
-        
+
         if (count == 0) {
             ElectionAlgorithmThread.seekerCreation = System.currentTimeMillis();
             ElectionAlgorithmThread.seekerId = PlayerApplication.getId();
 
-            for (OtherPlayer other : players) {
+            for (OtherPlayerRepository other : players) {
                 coordinatorRespond(other);
             }
-            synchronized(lock) {
+            synchronized (lock) {
                 try {
                     lock.wait(5000);
                     if (!electionThread.isInterrupted()) {
@@ -65,9 +65,10 @@ public class ElectionAlgorithmThread extends Thread {
                         new EliminationThread().start();
                         System.out.println("SEEKER");
                     }
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException e) {
+                }
             }
-            
+
         }
     }
 
@@ -77,18 +78,18 @@ public class ElectionAlgorithmThread extends Thread {
         if (message.getDistance() > playerDistance || (message.getDistance() == playerDistance && message.getId() > PlayerApplication.getId()))
             return false;
 
-        OtherPlayer otherPlayer = OtherPlayer.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get();
+        OtherPlayerRepository otherPlayerRepository = OtherPlayerRepository.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get();
         if (seekerCreation != -1) {
-            coordinatorRespond(otherPlayer);
+            coordinatorRespond(otherPlayerRepository);
             return false;
         }
         Message ok = Message.newBuilder()
                 .setProtocol(Message.Protocol.ELECTION_OK)
                 .setId(PlayerApplication.getId())
                 .build();
-        otherPlayer.writeThread.writeMessage(ok);
-        otherPlayer.active = true;
-        System.out.println("OK to " + otherPlayer.id);
+        otherPlayerRepository.writeThread.writeMessage(ok);
+        otherPlayerRepository.active = true;
+        System.out.println("OK to " + otherPlayerRepository.id);
         return true;
     }
 
@@ -103,13 +104,13 @@ public class ElectionAlgorithmThread extends Thread {
             System.out.println("SEEKER change to " + seekerId);
             PlayerApplication.gamePhase = 1;
             MutualExclusionAlgorithmThread.initializeThread();
-        
-        } else if (PlayerApplication.getId() == ElectionAlgorithmThread.seekerId){
-            coordinatorRespond(OtherPlayer.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get());
+
+        } else if (PlayerApplication.getId() == ElectionAlgorithmThread.seekerId) {
+            coordinatorRespond(OtherPlayerRepository.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get());
         }
     }
 
-    public static void coordinatorRespond(OtherPlayer other) {
+    public static void coordinatorRespond(OtherPlayerRepository other) {
         MessageOuterClass.Message coordinator = MessageOuterClass.Message.newBuilder()
                 .setProtocol(MessageOuterClass.Message.Protocol.COORDINATOR)
                 .setId(PlayerApplication.getId())

@@ -1,4 +1,4 @@
-package Player.dao;
+package Player.repository.dao;
 
 public record Coordinates (Integer x, Integer y) {
 }

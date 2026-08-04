@@ -1,6 +1,6 @@
 package Player.client;
 
-import Player.dao.Self;
+import Player.repository.dao.Player;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dtos.PlayerInfo;
 import dtos.RegistrationResponse;
@@ -25,7 +25,7 @@ public class AdminServerClient {
         this.client = client;
     }
 
-    public RegistrationResponse register(Self self) {
+    public RegistrationResponse register(Player self) {
         PlayerInfo playerInfo = new PlayerInfo(self.playerId(), self.playerListeningPort());
 
         try {
