@@ -4,7 +4,7 @@ import Player.DistributedAlgorithms.ElectionAlgorithmThread;
 import Player.DistributedAlgorithms.MutualExclusionAlgorithmThread;
 import Player.Gameplay.EliminationThread;
 import Player.Gameplay.OtherPlayer;
-import Player.Player;
+import Player.PlayerApplication;
 import proto.messages.MessageOuterClass.Message;
 
 
@@ -20,7 +20,7 @@ public class EvaluateMessagesThread extends Thread{
         while(true) {
             Message message = queue.take();
 
-            if(message.getProtocol() == Message.Protocol.COORDINATOR || (Player.gamePhase > 0 && message.getProtocol() == Message.Protocol.ELECTION && Player.getId() == ElectionAlgorithmThread.seekerId))
+            if(message.getProtocol() == Message.Protocol.COORDINATOR || (PlayerApplication.gamePhase > 0 && message.getProtocol() == Message.Protocol.ELECTION && PlayerApplication.getId() == ElectionAlgorithmThread.seekerId))
                 ElectionAlgorithmThread.coordinatorProcess(message);
             
             if(message.getProtocol() == Message.Protocol.ELECTION && ElectionAlgorithmThread.electionProcess(message))
@@ -33,7 +33,7 @@ public class EvaluateMessagesThread extends Thread{
                 MutualExclusionAlgorithmThread.decreaseCounter();
             }
             if(message.getProtocol() == Message.Protocol.ELIMINATED) {
-                if(ElectionAlgorithmThread.seekerId == Player.getId()) {
+                if(ElectionAlgorithmThread.seekerId == PlayerApplication.getId()) {
                     OtherPlayer otherPlayer = OtherPlayer.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get();
                     otherPlayer.active = false;
                     System.out.println(message.getId() + " is out");

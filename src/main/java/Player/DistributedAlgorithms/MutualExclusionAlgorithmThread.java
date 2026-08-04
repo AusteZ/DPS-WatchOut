@@ -1,7 +1,7 @@
 package Player.DistributedAlgorithms;
 
 import Player.Gameplay.OtherPlayer;
-import Player.Player;
+import Player.PlayerApplication;
 import Player.Gameplay.PlayerMove;
 import Player.Connections.WriteThread;
 import proto.messages.MessageOuterClass;
@@ -33,7 +33,7 @@ public class MutualExclusionAlgorithmThread extends Thread{
 
         Message exclusion = MessageOuterClass.Message.newBuilder()
                 .setProtocol(MessageOuterClass.Message.Protocol.EXCLUSION)
-                .setId(Player.getId())
+                .setId(PlayerApplication.getId())
                 .setTimestamp(MutualExclusionAlgorithmThread.timestamp)
                 .build();
         ArrayList<OtherPlayer> list = OtherPlayer.getPlayerList();
@@ -52,7 +52,7 @@ public class MutualExclusionAlgorithmThread extends Thread{
             }
         }
         synchronized(permissionLock) {
-            if(!Player.active) {
+            if(!PlayerApplication.active) {
                 while(!queue.isEmpty()) {
                     sendOk(take());
                 }
@@ -77,10 +77,10 @@ public class MutualExclusionAlgorithmThread extends Thread{
     public static boolean ableToBeEliminated(){
         synchronized(permissionLock) {
             if(!permission) {
-                Player.active = false;
+                PlayerApplication.active = false;
                 System.out.println("I was caught");
             }
-            return !Player.active;
+            return !PlayerApplication.active;
         }
     }
     public static void exclusionRespond(Message message){
@@ -105,14 +105,14 @@ public class MutualExclusionAlgorithmThread extends Thread{
     private static void sendOk(WriteThread writeThread){
         Message ok = MessageOuterClass.Message.newBuilder()
                 .setProtocol(MessageOuterClass.Message.Protocol.OK)
-                .setId(Player.getId())
+                .setId(PlayerApplication.getId())
                 .build();
         writeThread.writeMessage(ok);
     }
     private static void sendOut(WriteThread writeThread){
         Message out = MessageOuterClass.Message.newBuilder()
                 .setProtocol(MessageOuterClass.Message.Protocol.ELIMINATED)
-                .setId(Player.getId())
+                .setId(PlayerApplication.getId())
                 .build();
         writeThread.writeMessage(out);
     }

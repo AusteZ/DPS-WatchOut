@@ -1,7 +1,7 @@
 package Player.Gameplay;
 
 import Player.DistributedAlgorithms.ElectionAlgorithmThread;
-import Player.Player;
+import Player.PlayerApplication;
 import proto.messages.MessageOuterClass.Message;
 
 public class EliminationThread extends Thread {
@@ -40,7 +40,7 @@ public class EliminationThread extends Thread {
     public static void wasEliminated(){
         Message eliminated = Message.newBuilder()
                 .setProtocol(Message.Protocol.ELIMINATED)
-                .setId(Player.getId())
+                .setId(PlayerApplication.getId())
                 .build();
         for(OtherPlayer otherPlayer : OtherPlayer.getPlayerList()) {
             otherPlayer.writeThread.writeMessage(eliminated);
@@ -49,7 +49,7 @@ public class EliminationThread extends Thread {
     public static void cannotBeEliminated(){
         Message no = Message.newBuilder()
                 .setProtocol(Message.Protocol.NO)
-                .setId(Player.getId())
+                .setId(PlayerApplication.getId())
                 .build();
         OtherPlayer otherPlayer = OtherPlayer.getPlayerList().stream().filter(other -> other.id == ElectionAlgorithmThread.seekerId).findFirst().get();
         otherPlayer.writeThread.writeMessage(no);
@@ -57,7 +57,7 @@ public class EliminationThread extends Thread {
     public static void eliminate(OtherPlayer otherPlayer){
         Message eliminated = Message.newBuilder()
                 .setProtocol(Message.Protocol.ELIMINATED)
-                .setId(Player.getId())
+                .setId(PlayerApplication.getId())
                 .build();
         otherPlayer.writeThread.writeMessage(eliminated);
         

@@ -3,7 +3,7 @@ package Player.Connections;
 import dtos.PlayerInfo;
 import Player.DistributedAlgorithms.ElectionAlgorithmThread;
 import Player.Gameplay.OtherPlayer;
-import Player.Player;
+import Player.PlayerApplication;
 import proto.coordinates.CoordinatesOuterClass.Coordinates;
 
 import java.io.IOException;
@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 
+//TODO: have threads for each registration, not the whole thing
 public class ConnectToOtherPlayersThread extends Thread{
     ServerSocket welcomeSocket;
     static boolean startElection = false;
@@ -26,10 +27,10 @@ public class ConnectToOtherPlayersThread extends Thread{
             evaluation = new EvaluateMessagesThread();
             welcomeSocket = new ServerSocket(listeningPort);
             playerCoordinates = Coordinates.newBuilder()
-                    .setId(Player.getId())
-                    .setCoordX(Player.getCoordX())
-                    .setCoordY(Player.getCoordY())
-                    .setListeningPort(Player.getListeningPort())
+                    .setId(PlayerApplication.getId())
+                    .setCoordX(PlayerApplication.getCoordX())
+                    .setCoordY(PlayerApplication.getCoordY())
+                    .setListeningPort(PlayerApplication.getListeningPort())
                     .build();
             evaluation.start();
             for(PlayerInfo playerInfo : playerList){
@@ -75,7 +76,7 @@ public class ConnectToOtherPlayersThread extends Thread{
                 other.readThread.start();
                 OtherPlayer.addOtherPlayer(other);
                 
-                if(Player.gamePhase > 0 && Player.getId() == ElectionAlgorithmThread.seekerId) {
+                if(PlayerApplication.gamePhase > 0 && PlayerApplication.getId() == ElectionAlgorithmThread.seekerId) {
                     ElectionAlgorithmThread.coordinatorRespond(other);
                 }
                 

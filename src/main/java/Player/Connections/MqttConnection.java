@@ -1,7 +1,7 @@
 package Player.Connections;
 
 import Player.DistributedAlgorithms.ElectionAlgorithmThread;
-import Player.Player;
+import Player.PlayerApplication;
 import org.eclipse.paho.client.mqttv3.*;
 
 public class MqttConnection {
@@ -26,8 +26,8 @@ public class MqttConnection {
                 public void messageArrived(String topic, MqttMessage message) {
                     String receivedMessage = new String(message.getPayload());
                     System.out.println(receivedMessage);
-                    if(topic.equals("game/flow") && receivedMessage.equals("Start game") && Player.gamePhase != 1) {
-                        Player.gamePhase = 0;
+                    if(topic.equals("game/flow") && receivedMessage.equals("Start game") && PlayerApplication.gamePhase != 1) {
+                        PlayerApplication.gamePhase = 0;
                         System.out.println("Game start");
                         if(ConnectToOtherPlayersThread.getGameStart()){
                             System.out.println("I start the game");
