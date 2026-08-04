@@ -4,7 +4,10 @@ import Player.DistributedAlgorithms.ElectionAlgorithmThread;
 import Player.DistributedAlgorithms.MutualExclusionAlgorithmThread;
 import Player.Gameplay.EliminationThread;
 import Player.PlayerApplication;
+import Player.enums.GamePhase;
 import Player.repository.OtherPlayerRepository;
+import Player.repository.dao.GameState;
+import Player.repository.dao.Self;
 import proto.messages.MessageOuterClass.Message;
 
 
@@ -23,7 +26,7 @@ public class EvaluateMessagesThread extends Thread {
         while (true) {
             Message message = queue.take();
 
-            if (message.getProtocol() == Message.Protocol.COORDINATOR || (PlayerApplication.gamePhase > 0 && message.getProtocol() == Message.Protocol.ELECTION && PlayerApplication.getId() == ElectionAlgorithmThread.seekerId))
+            if (message.getProtocol() == Message.Protocol.COORDINATOR || (GamePhase.PLAY == GameState.getGamePhase() && message.getProtocol() == Message.Protocol.ELECTION && Self.getInstance().playerId() == ElectionAlgorithmThread.seekerId))
                 ElectionAlgorithmThread.coordinatorProcess(message);
 
             if (message.getProtocol() == Message.Protocol.ELECTION && ElectionAlgorithmThread.electionProcess(message))

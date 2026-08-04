@@ -15,7 +15,6 @@ import java.net.http.HttpClient;
 
 public class PlayerApplication {
     private static int id;
-    private static int listeningPort;
     private static int coordX;
     private static int coordY;
     public static boolean active = true;
@@ -57,9 +56,5 @@ public class PlayerApplication {
     public static void setCoordXAndCoordY(int coordX, int coordY) {
         PlayerApplication.coordX = coordX;
         PlayerApplication.coordY = coordY;
-    }
-
-    public static int getListeningPort() {
-        return listeningPort;
     }
 }
