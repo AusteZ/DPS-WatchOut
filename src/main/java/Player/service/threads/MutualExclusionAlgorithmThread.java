@@ -40,16 +40,17 @@ public class MutualExclusionAlgorithmThread extends Thread {
     }
 
     public void run() {
-        getInLine();
+        List<OtherPlayer> players = otherPlayerRepository.getPlayerListV2();
+        getInLine(players);
         waitToBeFirstInLine();
         securePermissionToGoToHomebase();
 
         movementService.moveToHomeBase();
 
-        announceEscape();
+        announceEscape(players);
     }
 
-    private void getInLine() {
+    private void getInLine(List<OtherPlayer> players) {
         synchronized (timestampLock) {
             timestamp = System.nanoTime();
         }
@@ -61,7 +62,6 @@ public class MutualExclusionAlgorithmThread extends Thread {
                 .setTimestamp(timestamp)
                 .build();
 
-        List<OtherPlayer> players = otherPlayerRepository.getPlayerListV2();
         for (OtherPlayer player : players) {
             if (player.player().playerId() != gameState.getSeeker().seekerId()) {
                 playersAheadInLineCount++;
@@ -95,14 +95,16 @@ public class MutualExclusionAlgorithmThread extends Thread {
         }
     }
 
-    private void announceEscape() {
+    private void announceEscape(List<OtherPlayer> players) {
         System.out.println("I got away");
         timestamp = -1;
         while (!queue.isEmpty()) {
             sendOk(take());
         }
-        for (OtherPlayerRepository player : OtherPlayerRepository.getPlayerList()) {
-            sendOut(player.writeThread);
+
+
+        for (OtherPlayer player : players) {
+            sendOut(player.writeThread());
         }
     }
 
@@ -155,7 +157,7 @@ public class MutualExclusionAlgorithmThread extends Thread {
     }
 
     public void exclusionRespond(Message message) {
-        OtherPlayer otherPlayer = otherPlayerRepository.getPlayerListV2().stream().filter(other -> other.player().playerId() == message.getId()).findFirst().get();
+        OtherPlayer otherPlayer = otherPlayerRepository.getPlayerById(message.getId());
         //System.out.println(MutualExclusionAlgorithmThread.timestamp);
         //System.out.println(message.getTimestamp());
         synchronized (timestampLock) {

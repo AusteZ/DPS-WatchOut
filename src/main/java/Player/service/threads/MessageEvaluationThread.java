@@ -5,6 +5,7 @@ import Player.Gameplay.EliminationThread;
 import Player.enums.GamePhase;
 import Player.repository.OtherPlayerRepository;
 import Player.repository.dao.GameState;
+import Player.repository.dao.OtherPlayer;
 import Player.repository.dao.Player;
 import Player.service.ActiveGameService;
 import Player.service.ElectionService;
@@ -50,7 +51,7 @@ public class MessageEvaluationThread extends Thread {
             case SEEKER -> coordinatorProcess(message);
             case ELECTION -> electionProcess(message);
             case ELIMINATED -> eliminationProcess(message);
-            case OK -> okProcess(message);
+            case OK -> okProcess();
             case EXCLUSION -> exclusionProcess(message);
             case NO -> noProcess(message);
         }
@@ -74,8 +75,9 @@ public class MessageEvaluationThread extends Thread {
     private void eliminationProcess(Message message) {
         int seekerId = gameState.getSeeker().seekerId();
         if (seekerId == localPlayer.playerId()) {
-            OtherPlayerRepository otherPlayerRepository = OtherPlayerRepository.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get();
-            otherPlayerRepository.active = false;
+            OtherPlayer otherPlayer = otherPlayerRepository.getPlayerById(message.getId());
+            otherPlayer.player().setActive(false);
+
             System.out.println(message.getId() + " is out");
         } else if (seekerId == message.getId()) {
             if (activeGameService.canBeEliminated()) {
@@ -84,14 +86,13 @@ public class MessageEvaluationThread extends Thread {
                 EliminationThread.cannotBeEliminated();
             }
         } else {
-            OtherPlayerRepository otherPlayerRepository = OtherPlayerRepository.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get();
-            otherPlayerRepository.active = false;
+            OtherPlayer otherPlayer = otherPlayerRepository.getPlayerById(message.getId());
+            otherPlayer.player().setActive(false);
             System.out.println(message.getId() + " is out");
         }
     }
 
-    private void okProcess(Message message) {
-        OtherPlayerRepository otherPlayerRepository = OtherPlayerRepository.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get();
+    private void okProcess() {
         activeGameService.reduceLine();
     }
 
@@ -100,8 +101,8 @@ public class MessageEvaluationThread extends Thread {
     }
 
     private void noProcess(Message message) {
-        OtherPlayerRepository otherPlayerRepository = OtherPlayerRepository.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get();
-        otherPlayerRepository.active = false;
+        OtherPlayer otherPlayer = otherPlayerRepository.getPlayerById(message.getId());
+        otherPlayer.player().setActive(false);
         System.out.println("Got away " + message.getId());
     }
 }

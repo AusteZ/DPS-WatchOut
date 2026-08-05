@@ -48,7 +48,7 @@ public final class ElectionService {
     }
 
     public void electionProcess(MessageOuterClass.Message message) {
-        OtherPlayer otherPlayer = getOtherPlayerById(message.getId());
+        OtherPlayer otherPlayer = otherPlayerRepository.getPlayerById(message.getId());
         GameState.Seeker seeker = gameState.getSeeker();
 
         if (seeker != null) {
@@ -75,18 +75,10 @@ public final class ElectionService {
             System.out.println("SEEKER change to " + seeker.seekerId());
             activeGameService.startActiveGame();
         } else if (localPlayer.playerId() == seeker.seekerId()) {
-            OtherPlayer otherPlayer = getOtherPlayerById(message.getId());
+            OtherPlayer otherPlayer = otherPlayerRepository.getPlayerById(message.getId());
             MessageOuterClass.Message seekerMessage = createSeekerMessage(seeker.seekerId(), seeker.seekerCreationTimestamp());
             otherPlayer.writeThread().writeMessage(seekerMessage);
         }
-    }
-
-    private OtherPlayer getOtherPlayerById(int playerId) {
-        return otherPlayerRepository.getPlayerListV2()
-                .stream()
-                .filter(other -> other.player().playerId() == playerId)
-                .findFirst()
-                .get();
     }
 
     private MessageOuterClass.Message createSeekerMessage(int seekerId, long seekerCreationTimestamp) {

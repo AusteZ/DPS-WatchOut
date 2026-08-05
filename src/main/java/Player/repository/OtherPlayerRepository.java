@@ -1,6 +1,5 @@
 package Player.repository;
 
-import Player.Connections.ReadThread;
 import Player.Connections.WriteThread;
 import Player.repository.dao.OtherPlayer;
 
@@ -14,7 +13,6 @@ public class OtherPlayerRepository {
     public int coordX;
     public int coordY;
     public WriteThread writeThread;
-    public ReadThread readThread;
     public boolean active = false;
 
     public void addPlayer(OtherPlayer player) {
@@ -27,6 +25,14 @@ public class OtherPlayerRepository {
         synchronized (players) {
             return new ArrayList<>(players);
         }
+    }
+
+    public OtherPlayer getPlayerById(int playerId) {
+        return players
+                .stream()
+                .filter(other -> other.player().playerId() == playerId)
+                .findFirst()
+                .get();
     }
 
     public static ArrayList<OtherPlayerRepository> getPlayerList() {
