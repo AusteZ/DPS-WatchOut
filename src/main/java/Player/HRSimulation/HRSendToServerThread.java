@@ -2,7 +2,7 @@ package Player.HRSimulation;
 
 import dtos.MeasurementListDto;
 import dtos.MeasurementValue;
-import Player.Player;
+import Player.PlayerApplication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class HRSendToServerThread extends Thread {
                 }
 
                 MeasurementListDto measurementListDto = new MeasurementListDto(
-                        Player.getId(),
+                        PlayerApplication.getId(),
                         System.currentTimeMillis(),
                         list
                 );

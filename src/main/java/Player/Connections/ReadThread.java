@@ -1,29 +1,34 @@
 package Player.Connections;
 
+import Player.service.MessagingService;
+import proto.coordinates.CoordinatesOuterClass;
 import proto.messages.MessageOuterClass.Message;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
-public class ReadThread extends Thread{
-    private InputStream inputStream;
-    public Queue queue;
+public class ReadThread extends Thread {
+    private final InputStream inputStream;
+    private final MessagingService messagingService;
 
-    public ReadThread(Socket socket, Queue queue) throws IOException {
-        inputStream = socket.getInputStream();
-        this.queue = queue;
+    public ReadThread(Socket socket, MessagingService messagingService) throws IOException {
+        this.inputStream = socket.getInputStream();
+        this.messagingService = messagingService;
     }
-    
 
     public InputStream getInputStream() {
         return inputStream;
     }
 
-    public void run(){
-        while(true) {
+    public CoordinatesOuterClass.Coordinates getCoordinates() throws IOException {
+        return CoordinatesOuterClass.Coordinates.parseDelimitedFrom(inputStream);
+    }
+
+    public void run() {
+        while (true) {
             try {
-                queue.put(Message.parseDelimitedFrom(inputStream));
+                messagingService.putMessage(Message.parseDelimitedFrom(inputStream));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

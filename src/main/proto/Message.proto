@@ -8,7 +8,7 @@ message Message {
   enum Protocol {
     ELECTION = 0;
     ELECTION_OK = 1;
-    COORDINATOR = 2;
+    SEEKER = 2;
     EXCLUSION = 3;
     OK = 4;
     ELIMINATED = 5;
