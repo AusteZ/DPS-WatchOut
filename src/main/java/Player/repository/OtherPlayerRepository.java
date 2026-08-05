@@ -29,12 +29,6 @@ public class OtherPlayerRepository {
         }
     }
 
-    public synchronized static void addOtherPlayer(OtherPlayerRepository otherPlayerRepository) {
-        synchronized (oplayers) {
-            oplayers.add(otherPlayerRepository);
-        }
-    }
-
     public static ArrayList<OtherPlayerRepository> getPlayerList() {
         synchronized (oplayers) {
             return new ArrayList<OtherPlayerRepository>(oplayers);

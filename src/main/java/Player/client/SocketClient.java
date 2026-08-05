@@ -1,6 +1,7 @@
 package Player.client;
 
 import Player.Connections.EvaluateMessagesThread;
+import Player.Connections.Queue;
 import Player.Connections.ReadThread;
 import Player.Connections.WriteThread;
 import Player.repository.dao.OtherPlayer;
@@ -14,11 +15,11 @@ import java.net.Socket;
 
 public class SocketClient {
     private final ServerSocket welcomeSocket;
-    private final EvaluateMessagesThread evaluationThread;
+    private final Queue queue;
 
     public SocketClient(int listeningPort) throws IOException {
-        evaluationThread = new EvaluateMessagesThread();
-        evaluationThread.start();
+        this.queue = new Queue();
+        EvaluateMessagesThread.startInstance(queue);
         welcomeSocket = new ServerSocket(listeningPort);
     }
 
@@ -51,7 +52,7 @@ public class SocketClient {
 
     private ReadThread createReadThread() throws IOException {
         Socket otherPlayerWriteSocket = welcomeSocket.accept();
-        return new ReadThread(otherPlayerWriteSocket, evaluationThread.getMessageQueue());
+        return new ReadThread(otherPlayerWriteSocket, queue);
     }
 
     private OtherPlayer createOtherPlayer(CoordinatesOuterClass.Coordinates coords, WriteThread writeThread, ReadThread readThread) throws IOException {

@@ -11,10 +11,15 @@ public class RegistrationWithNewPlayerAcceptThread extends Thread {
     private final SocketClient socketClient;
     private final OtherPlayerRepository otherPlayerRepository;
 
-    public RegistrationWithNewPlayerAcceptThread(SocketClient socketClient,
+    private RegistrationWithNewPlayerAcceptThread(SocketClient socketClient,
                                                  OtherPlayerRepository otherPlayerRepository) {
         this.socketClient = socketClient;
         this.otherPlayerRepository = otherPlayerRepository;
+    }
+
+    public static void startInstance(SocketClient socketClient,
+                                OtherPlayerRepository otherPlayerRepository){
+        new RegistrationWithNewPlayerAcceptThread(socketClient, otherPlayerRepository).start();
     }
 
     @Override

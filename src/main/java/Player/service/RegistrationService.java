@@ -1,15 +1,15 @@
 package Player.service;
 
-import Player.client.SocketClient;
 import Player.HRSimulation.HRCollectValues;
 import Player.client.AdminServerClient;
+import Player.client.SocketClient;
 import Player.enums.GamePhase;
+import Player.repository.OtherPlayerRepository;
 import Player.repository.dao.Coordinates;
 import Player.repository.dao.GameState;
 import Player.repository.dao.OtherPlayer;
 import Player.repository.dao.Player;
 import Player.repository.dao.Self;
-import Player.repository.OtherPlayerRepository;
 import dtos.PlayerInfo;
 import dtos.RegistrationResponse;
 import proto.coordinates.CoordinatesOuterClass;
@@ -60,6 +60,6 @@ public final class RegistrationService {
     }
 
     private void acceptNewRegistrations() {
-        (new RegistrationWithNewPlayerAcceptThread(socketClient, otherPlayerRepository)).start();
+        RegistrationWithNewPlayerAcceptThread.startInstance(socketClient, otherPlayerRepository);
     }
 }
