@@ -21,12 +21,13 @@ public final class ElectionService {
     public ElectionService(GameState gameState,
                            Player localPlayer,
                            OtherPlayerRepository otherPlayerRepository,
-                           ActiveGameService activeGameService) {
+                           ActiveGameService activeGameService,
+                           EliminationService eliminationService) {
         this.gameState = gameState;
         this.localPlayer = localPlayer;
         this.otherPlayerRepository = otherPlayerRepository;
         this.activeGameService = activeGameService;
-        this.electionAlgorithmThread = new ElectionAlgorithmThread(gameState, localPlayer, otherPlayerRepository);
+        this.electionAlgorithmThread = new ElectionAlgorithmThread(gameState, localPlayer, otherPlayerRepository, eliminationService);
     }
 
     public void startElection() {

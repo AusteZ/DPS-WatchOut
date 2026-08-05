@@ -13,8 +13,9 @@ public final class MessagingService {
                             Player localPlayer,
                             OtherPlayerRepository otherPlayerRepository,
                             ElectionService electionService,
-                            ActiveGameService activeGameService) {
-        this.messageEvaluationThread = new MessageEvaluationThread(gameState, localPlayer, otherPlayerRepository, electionService, activeGameService);
+                            ActiveGameService activeGameService,
+                            EliminationService eliminationService) {
+        this.messageEvaluationThread = new MessageEvaluationThread(gameState, localPlayer, otherPlayerRepository, electionService, activeGameService, eliminationService);
         this.messageEvaluationThread.start();
     }
 

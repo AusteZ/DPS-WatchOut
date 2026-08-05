@@ -1,12 +1,12 @@
 package Player.service.threads;
 
-import Player.Gameplay.EliminationThread;
 import Player.enums.GamePhase;
 import Player.repository.OtherPlayerRepository;
 import Player.repository.dao.Coordinates;
 import Player.repository.dao.GameState;
 import Player.repository.dao.OtherPlayer;
 import Player.repository.dao.Player;
+import Player.service.EliminationService;
 import Player.utils.DistanceUtils;
 import proto.messages.MessageOuterClass;
 import proto.messages.MessageOuterClass.Message;
@@ -20,11 +20,16 @@ public class ElectionAlgorithmThread extends Thread {
     private final GameState gameState;
     private final Player localPlayer;
     private final OtherPlayerRepository otherPlayerRepository;
+    private final EliminationService eliminationService;
 
-    public ElectionAlgorithmThread(GameState gameState, Player localPlayer, OtherPlayerRepository otherPlayerRepository) {
+    public ElectionAlgorithmThread(GameState gameState,
+                                   Player localPlayer,
+                                   OtherPlayerRepository otherPlayerRepository,
+                                   EliminationService eliminationService) {
         this.gameState = gameState;
         this.localPlayer = localPlayer;
         this.otherPlayerRepository = otherPlayerRepository;
+        this.eliminationService = eliminationService;
     }
 
     @Override
@@ -78,7 +83,7 @@ public class ElectionAlgorithmThread extends Thread {
                 lock.wait(5000);
                 if (!Thread.currentThread().isInterrupted()) {
                     gameState.setGamePhase(GamePhase.PLAY);
-                    new EliminationThread().start();
+                    eliminationService.startSeeking();
                     System.out.println("SEEKER");
                 }
             } catch (InterruptedException e) {

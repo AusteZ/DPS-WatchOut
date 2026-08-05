@@ -5,7 +5,7 @@ import Player.repository.dao.Player;
 import Player.utils.DistanceUtils;
 
 public final class MovementService {
-    private Player localPlayer;
+    private final Player localPlayer;
 
     public MovementService(Player localPlayer) {
         this.localPlayer = localPlayer;
@@ -21,9 +21,8 @@ public final class MovementService {
         }
     }
 
-    public void moveToAnotherPlayer(int coordX, int coordY, double distance) {
+    public void moveToAnotherPlayer(Coordinates moveTo) {
         Coordinates coords = localPlayer.getCoordinates();
-        Coordinates moveTo = new Coordinates(coordX, coordY);
         long runFor = Math.round(5 * (DistanceUtils.calculateDistance(coords, moveTo)) * 1000);
         try {
             Thread.sleep(runFor);

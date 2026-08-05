@@ -8,6 +8,7 @@ import Player.repository.dao.GameState;
 import Player.repository.dao.Player;
 import Player.service.ActiveGameService;
 import Player.service.ElectionService;
+import Player.service.EliminationService;
 import Player.service.MessagingService;
 import Player.service.MovementService;
 import Player.service.RegistrationService;
@@ -34,8 +35,9 @@ public class PlayerApplication {
 
         MovementService movementService = new MovementService(localPlayer);
         ActiveGameService activeGameService = new ActiveGameService(gameState, localPlayer, otherPlayerRepository, movementService);
-        ElectionService electionService = new ElectionService(gameState, localPlayer, otherPlayerRepository, activeGameService);
-        MessagingService messagingService = new MessagingService(gameState, localPlayer, otherPlayerRepository, electionService, activeGameService);
+        EliminationService eliminationService = new EliminationService(gameState, localPlayer, otherPlayerRepository, movementService);
+        ElectionService electionService = new ElectionService(gameState, localPlayer, otherPlayerRepository, activeGameService, eliminationService);
+        MessagingService messagingService = new MessagingService(gameState, localPlayer, otherPlayerRepository, electionService, activeGameService, eliminationService);
 
         ServerSocket serverSocket = new ServerSocket(localPlayer.playerListeningPort());
         SocketClient socketClient = new SocketClient(serverSocket, messagingService);
@@ -66,13 +68,5 @@ public class PlayerApplication {
 
     public static int getId() {
         return id;
-    }
-
-    public static int getCoordX() {
-        return coordX;
-    }
-
-    public static int getCoordY() {
-        return coordY;
     }
 }

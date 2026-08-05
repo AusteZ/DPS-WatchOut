@@ -1,7 +1,6 @@
 package Player.service.threads;
 
 import Player.Connections.Queue;
-import Player.Gameplay.EliminationThread;
 import Player.enums.GamePhase;
 import Player.repository.OtherPlayerRepository;
 import Player.repository.dao.GameState;
@@ -9,6 +8,7 @@ import Player.repository.dao.OtherPlayer;
 import Player.repository.dao.Player;
 import Player.service.ActiveGameService;
 import Player.service.ElectionService;
+import Player.service.EliminationService;
 import proto.messages.MessageOuterClass.Message;
 
 
@@ -20,17 +20,20 @@ public class MessageEvaluationThread extends Thread {
     private final OtherPlayerRepository otherPlayerRepository;
     private final ElectionService electionService;
     private final ActiveGameService activeGameService;
+    private final EliminationService eliminationService;
 
     public MessageEvaluationThread(GameState gameState,
                                    Player localPlayer,
                                    OtherPlayerRepository otherPlayerRepository,
                                    ElectionService electionService,
-                                   ActiveGameService activeGameService) {
+                                   ActiveGameService activeGameService,
+                                   EliminationService eliminationService) {
         this.gameState = gameState;
         this.localPlayer = localPlayer;
         this.otherPlayerRepository = otherPlayerRepository;
         this.electionService = electionService;
         this.activeGameService = activeGameService;
+        this.eliminationService = eliminationService;
     }
 
     public void putMessage(Message message) {
@@ -81,9 +84,9 @@ public class MessageEvaluationThread extends Thread {
             System.out.println(message.getId() + " is out");
         } else if (seekerId == message.getId()) {
             if (activeGameService.canBeEliminated()) {
-                EliminationThread.wasEliminated();
+                eliminationService.wasEliminated();
             } else {
-                EliminationThread.cannotBeEliminated();
+                eliminationService.cannotBeEliminated();
             }
         } else {
             OtherPlayer otherPlayer = otherPlayerRepository.getPlayerById(message.getId());
