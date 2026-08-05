@@ -1,4 +1,4 @@
-package Player.Connections;
+package player.Connections;
 
 import proto.coordinates.CoordinatesOuterClass;
 import proto.messages.MessageOuterClass.Message;

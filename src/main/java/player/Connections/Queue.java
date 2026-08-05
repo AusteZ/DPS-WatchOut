@@ -1,4 +1,4 @@
-package Player.Connections;
+package player.Connections;
 
 import proto.messages.MessageOuterClass.Message;
 

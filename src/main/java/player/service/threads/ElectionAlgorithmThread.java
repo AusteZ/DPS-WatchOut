@@ -1,13 +1,13 @@
-package Player.service.threads;
+package player.service.threads;
 
-import Player.enums.GamePhase;
-import Player.repository.OtherPlayerRepository;
-import Player.repository.dao.Coordinates;
-import Player.repository.dao.GameState;
-import Player.repository.dao.OtherPlayer;
-import Player.repository.dao.Player;
-import Player.service.EliminationService;
-import Player.utils.DistanceUtils;
+import player.enums.GamePhase;
+import player.repository.OtherPlayerRepository;
+import player.repository.dao.Coordinates;
+import player.repository.dao.GameState;
+import player.repository.dao.OtherPlayer;
+import player.repository.dao.Player;
+import player.service.EliminationService;
+import player.utils.DistanceUtils;
 import proto.messages.MessageOuterClass;
 import proto.messages.MessageOuterClass.Message;
 

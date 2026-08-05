@@ -1,14 +1,14 @@
-package Player.service.threads;
+package player.service.threads;
 
-import Player.Connections.Queue;
-import Player.enums.GamePhase;
-import Player.repository.OtherPlayerRepository;
-import Player.repository.dao.GameState;
-import Player.repository.dao.OtherPlayer;
-import Player.repository.dao.Player;
-import Player.service.ActiveGameService;
-import Player.service.ElectionService;
-import Player.service.EliminationService;
+import player.Connections.Queue;
+import player.enums.GamePhase;
+import player.repository.OtherPlayerRepository;
+import player.repository.dao.GameState;
+import player.repository.dao.OtherPlayer;
+import player.repository.dao.Player;
+import player.service.ActiveGameService;
+import player.service.ElectionService;
+import player.service.EliminationService;
 import proto.messages.MessageOuterClass.Message;
 
 
