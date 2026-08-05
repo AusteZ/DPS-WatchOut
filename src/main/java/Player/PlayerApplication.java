@@ -1,5 +1,6 @@
 package Player;
 
+import Player.HRSimulation.HRSendToServerThread;
 import Player.client.AdminServerClient;
 import Player.client.SocketClient;
 import Player.listener.MqttListener;
@@ -21,15 +22,14 @@ import java.net.ServerSocket;
 import java.net.http.HttpClient;
 
 public class PlayerApplication {
-    private static int id;
-    private static int coordX;
-    private static int coordY;
 
     public static void main(String[] ignoredArgs) throws Exception {
         Player localPlayer = createLocalPlayer();
         GameState gameState = new GameState();
 
-        AdminServerClient adminServerClient = createAdminServerClient();
+        String url = ApplicationResourcesHandler.getProperty("server.url");
+        HttpClient httpClient = HttpClient.newBuilder().build();
+        AdminServerClient adminServerClient = new AdminServerClient(url, httpClient);
 
         OtherPlayerRepository otherPlayerRepository = new OtherPlayerRepository();
 
@@ -45,6 +45,7 @@ public class PlayerApplication {
         RegistrationService registrationService = new RegistrationService(gameState, localPlayer, adminServerClient, otherPlayerRepository, socketClient);
 
         registrationService.register();
+        new HRSendToServerThread(localPlayer, httpClient, url).start();
 
         startMqttListener(gameState, electionService);
     }
@@ -54,19 +55,9 @@ public class PlayerApplication {
         return userInterface.setupLocalPlayer();
     }
 
-    private static AdminServerClient createAdminServerClient() {
-        String url = ApplicationResourcesHandler.getProperty("server.url");
-        HttpClient httpClient = HttpClient.newBuilder().build();
-        return new AdminServerClient(url, httpClient);
-    }
-
     private static void startMqttListener(GameState gameState, ElectionService electionService) throws MqttException {
         String broker = ApplicationResourcesHandler.getProperty("mqtt.broker");
         int qos = 2;
         new MqttListener(broker, qos, gameState, electionService);
-    }
-
-    public static int getId() {
-        return id;
     }
 }

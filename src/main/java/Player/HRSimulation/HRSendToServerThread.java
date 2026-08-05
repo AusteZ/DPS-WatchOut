@@ -1,9 +1,9 @@
 package Player.HRSimulation;
 
+import Player.repository.dao.Player;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dtos.MeasurementListDto;
 import dtos.MeasurementValue;
-import Player.PlayerApplication;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,15 +13,17 @@ import java.net.http.HttpResponse;
 import java.util.List;
 
 public class HRSendToServerThread extends Thread {
-    private static HttpClient client;
-    private static String serverAddress;
+    private final Player localPlayer;
+    private final HttpClient client;
+    private final String serverAddress;
 
     private static final String POST_PATH = "/analytics/postmeasurements";
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static void addClient(HttpClient client, String serverAddress) {
-        HRSendToServerThread.client = client;
-        HRSendToServerThread.serverAddress = serverAddress;
+    public HRSendToServerThread(Player localPlayer, HttpClient client, String serverAddress) {
+        this.localPlayer = localPlayer;
+        this.client = client;
+        this.serverAddress = serverAddress;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class HRSendToServerThread extends Thread {
                 }
 
                 MeasurementListDto measurementListDto = new MeasurementListDto(
-                        PlayerApplication.getId(),
+                        localPlayer.playerId(),
                         System.currentTimeMillis(),
                         list
                 );

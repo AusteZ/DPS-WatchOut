@@ -9,7 +9,7 @@ import proto.messages.MessageOuterClass;
 
 import java.util.List;
 
-public class EliminationService {
+public final class EliminationService {
     private final GameState gameState;
     private final Player localPlayer;
     private final OtherPlayerRepository otherPlayerRepository;
