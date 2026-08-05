@@ -1,8 +1,8 @@
 package Player.Gameplay;
 
-import Player.DistributedAlgorithms.ElectionAlgorithmThread;
 import Player.PlayerApplication;
 import Player.repository.OtherPlayerRepository;
+import Player.service.threads.ElectionAlgorithmThread;
 import proto.messages.MessageOuterClass.Message;
 
 public class EliminationThread extends Thread {

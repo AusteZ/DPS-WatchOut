@@ -4,6 +4,7 @@ public class Player {
     private final int playerListeningPort;
     private final int playerId;
     private Coordinates coordinates;
+    private boolean isActive;
 
     public Player(int playerListeningPort, int playerId) {
         this.playerListeningPort = playerListeningPort;
@@ -30,5 +31,13 @@ public class Player {
 
     public void setCoordinates(Coordinates coordinates) {
         this.coordinates = coordinates;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 }

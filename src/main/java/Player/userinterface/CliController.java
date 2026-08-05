@@ -1,30 +1,23 @@
 package Player.userinterface;
 
-import Player.service.RegistrationService;
+import Player.repository.dao.Player;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.function.IntPredicate;
 
-public final class CliController {
+public final class CliController implements UserInterface {
     BufferedReader reader =
             new BufferedReader(new InputStreamReader(System.in));
-    private final RegistrationService registrationService;
 
-    public CliController(RegistrationService registrationService) {
-        this.registrationService = registrationService;
+    public CliController() {
     }
 
-    public void run() throws Exception {
-        register();
-    }
-
-    private void register() throws Exception {
+    public Player setupLocalPlayer() throws Exception {
         int playerId = getPlayerId();
         int listeningPort = getListeningPort();
-
-        registrationService.register(playerId, listeningPort);
+        return new Player(playerId, listeningPort);
     }
 
     private int getPlayerId() throws Exception {

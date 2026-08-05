@@ -1,25 +1,21 @@
-package Player.service;
+package Player.service.threads;
 
-import Player.DistributedAlgorithms.ElectionAlgorithmThread;
 import Player.client.SocketClient;
-import Player.repository.dao.GameState;
-import Player.repository.dao.OtherPlayer;
 import Player.enums.GamePhase;
 import Player.repository.OtherPlayerRepository;
+import Player.repository.dao.GameState;
+import Player.repository.dao.OtherPlayer;
 
 public class RegistrationWithNewPlayerAcceptThread extends Thread {
+    private final GameState gameState;
     private final SocketClient socketClient;
     private final OtherPlayerRepository otherPlayerRepository;
 
-    private RegistrationWithNewPlayerAcceptThread(SocketClient socketClient,
+    public RegistrationWithNewPlayerAcceptThread(GameState gameState, SocketClient socketClient,
                                                  OtherPlayerRepository otherPlayerRepository) {
+        this.gameState = gameState;
         this.socketClient = socketClient;
         this.otherPlayerRepository = otherPlayerRepository;
-    }
-
-    public static void startInstance(SocketClient socketClient,
-                                OtherPlayerRepository otherPlayerRepository){
-        new RegistrationWithNewPlayerAcceptThread(socketClient, otherPlayerRepository).start();
     }
 
     @Override
@@ -36,7 +32,7 @@ public class RegistrationWithNewPlayerAcceptThread extends Thread {
         OtherPlayer otherPlayer = socketClient.acceptRegistrationWithOtherPlayers(null);
         otherPlayerRepository.addPlayer(otherPlayer);
 
-        if (GameState.getGamePhase() == GamePhase.PLAY && GameState.getSeekerId() == ElectionAlgorithmThread.seekerId) {
+        if (gameState.getGamePhase() == GamePhase.PLAY && gameState.getSeeker().seekerId() == ElectionAlgorithmThread.seekerId) {
             //ElectionAlgorithmThread.coordinatorRespond(other);
         }
     }

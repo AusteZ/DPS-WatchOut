@@ -1,8 +1,8 @@
 package Player.listener;
 
-import Player.DistributedAlgorithms.ElectionAlgorithmThread;
 import Player.enums.GamePhase;
 import Player.repository.dao.GameState;
+import Player.service.ElectionService;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -16,8 +16,10 @@ public class MqttListener {
     private static final String START_GAME_MESSAGE = "Start game";
 
     private final String clientId;
+    private final GameState gameState;
+    private final ElectionService electionService;
 
-    public MqttListener(String brokerUri, int qos) throws MqttException {
+    public MqttListener(String brokerUri, int qos, GameState gameState, ElectionService electionService) throws MqttException {
         this.clientId = MqttClient.generateClientId();
         MqttClient mqttClient = new MqttClient(brokerUri, clientId);
         mqttClient.setCallback(createCallback());
@@ -25,6 +27,8 @@ public class MqttListener {
         mqttClient.subscribe(GAME_MESSAGES_TOPIC);
         subscribe(mqttClient, qos);
         mqttClient.connect(createConnectionOptions());
+        this.electionService = electionService;
+        this.gameState = gameState;
     }
 
     private MqttConnectOptions createConnectionOptions() {
@@ -44,12 +48,12 @@ public class MqttListener {
             public void messageArrived(String topic, MqttMessage message) {
                 String receivedMessage = new String(message.getPayload());
                 System.out.println(receivedMessage);
-                if (topic.equals(GAME_FLOW_TOPIC) && receivedMessage.equals(START_GAME_MESSAGE) && GamePhase.PLAY != GameState.getGamePhase()) {
-                    GameState.setGamePhase(GamePhase.ELECTION);
+                if (topic.equals(GAME_FLOW_TOPIC) && receivedMessage.equals(START_GAME_MESSAGE) && GamePhase.PLAY != gameState.getGamePhase()) {
+                    //GameState.setGamePhase(GamePhase.ELECTION);
                     System.out.println("Game start");
                     //if(ConnectToOtherPlayersThread.getGameStart()){
                     System.out.println("I start the game");
-                    ElectionAlgorithmThread.initializeThread();
+                    electionService.startElection();
                     //}
                 }
             }

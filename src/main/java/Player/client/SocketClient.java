@@ -1,12 +1,10 @@
 package Player.client;
 
-import Player.Connections.EvaluateMessagesThread;
-import Player.Connections.Queue;
 import Player.Connections.ReadThread;
 import Player.Connections.WriteThread;
 import Player.repository.dao.OtherPlayer;
 import Player.repository.dao.Player;
-import dtos.PlayerInfo;
+import Player.service.MessagingService;
 import proto.coordinates.CoordinatesOuterClass;
 
 import java.io.IOException;
@@ -15,15 +13,14 @@ import java.net.Socket;
 
 public class SocketClient {
     private final ServerSocket welcomeSocket;
-    private final Queue queue;
+    private final MessagingService messagingService;
 
-    public SocketClient(int listeningPort) throws IOException {
-        this.queue = new Queue();
-        EvaluateMessagesThread.startInstance(queue);
-        welcomeSocket = new ServerSocket(listeningPort);
+    public SocketClient(ServerSocket welcomeSocket, MessagingService messagingService) throws IOException {
+        this.messagingService = messagingService;
+        this.welcomeSocket = welcomeSocket;
     }
 
-    public OtherPlayer registerWithOtherPlayer(CoordinatesOuterClass.Coordinates playerCoordinates, PlayerInfo otherPlayerInfo) throws IOException {
+    public OtherPlayer registerWithOtherPlayer(CoordinatesOuterClass.Coordinates playerCoordinates, dtos.PlayerInfo otherPlayerInfo) throws IOException {
         WriteThread otherPlayerWriteThread = createWriteThread(otherPlayerInfo.ipAddress(), otherPlayerInfo.listeningPort());
         otherPlayerWriteThread.writeCoordinates(playerCoordinates);
 
@@ -52,7 +49,7 @@ public class SocketClient {
 
     private ReadThread createReadThread() throws IOException {
         Socket otherPlayerWriteSocket = welcomeSocket.accept();
-        return new ReadThread(otherPlayerWriteSocket, queue);
+        return new ReadThread(otherPlayerWriteSocket, messagingService);
     }
 
     private OtherPlayer createOtherPlayer(CoordinatesOuterClass.Coordinates coords, WriteThread writeThread, ReadThread readThread) throws IOException {

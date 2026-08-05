@@ -3,22 +3,26 @@ package Player.repository.dao;
 import Player.enums.GamePhase;
 
 public class GameState {
-    private static volatile GamePhase gamePhase = GamePhase.PRE_REGISTRATION;
-    private static int seekerId;
+    private volatile GamePhase gamePhase = GamePhase.PRE_REGISTRATION;
+    private volatile Seeker seeker;
+    public static final Coordinates HOMEBASE_COORDINATES = new Coordinates(5, 5);
 
-    public static GamePhase getGamePhase() {
-        return gamePhase;
+    public GamePhase getGamePhase() {
+        return this.gamePhase;
     }
 
-    public static void setGamePhase(GamePhase gamePhase) {
-        GameState.gamePhase = gamePhase;
+    public void setGamePhase(GamePhase gamePhase) {
+        this.gamePhase = gamePhase;
     }
 
-    public static int getSeekerId() {
-        return seekerId;
+    public Seeker getSeeker() {
+        return this.seeker;
     }
 
-    public static void setSeekerId(int seekerId) {
-        GameState.seekerId = seekerId;
+    public void setSeeker(int playerId, long creationTimestamp) {
+        this.seeker = new Seeker(playerId, creationTimestamp);
+    }
+
+    public record Seeker(int seekerId, long seekerCreationTimestamp) {
     }
 }

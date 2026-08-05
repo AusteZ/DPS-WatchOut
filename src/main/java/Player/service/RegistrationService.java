@@ -9,8 +9,7 @@ import Player.repository.dao.Coordinates;
 import Player.repository.dao.GameState;
 import Player.repository.dao.OtherPlayer;
 import Player.repository.dao.Player;
-import Player.repository.dao.Self;
-import dtos.PlayerInfo;
+import Player.service.threads.RegistrationWithNewPlayerAcceptThread;
 import dtos.RegistrationResponse;
 import proto.coordinates.CoordinatesOuterClass;
 
@@ -19,30 +18,33 @@ import java.util.List;
 import java.util.Objects;
 
 public final class RegistrationService {
+    private final GameState gameState;
+    private final Player localPlayer;
     private final AdminServerClient adminServerClient;
-    private SocketClient socketClient;
-    private OtherPlayerRepository otherPlayerRepository;
+    private final SocketClient socketClient;
+    private final OtherPlayerRepository otherPlayerRepository;
 
-    public RegistrationService(AdminServerClient adminServerClient, OtherPlayerRepository otherPlayerRepository) {
+    public RegistrationService(GameState gameState, Player localPlayer, AdminServerClient adminServerClient, OtherPlayerRepository otherPlayerRepository, SocketClient socketClient) {
+        this.gameState = gameState;
+        this.localPlayer = localPlayer;
         this.adminServerClient = adminServerClient;
         this.otherPlayerRepository = otherPlayerRepository;
+        this.socketClient = socketClient;
     }
 
-    public void register(Integer playerId, Integer playerListeningPort) throws IOException {
-        Player self = Self.createInstance(playerId, playerListeningPort);
-
-        RegistrationResponse response = adminServerClient.register(self);
+    public void register() throws IOException {
+        RegistrationResponse response = adminServerClient.register(localPlayer);
         Coordinates coordinates = new Coordinates(response.getCoordinateX(), response.getCoordinateY());
-        self.setCoordinates(coordinates);
+        localPlayer.setCoordinates(coordinates);
 
-        registerWithOtherPlayers(self, response.getPlayerList());
+        registerWithOtherPlayers(localPlayer, response.getPlayerList());
         acceptNewRegistrations();
 
         (new HRCollectValues()).start();
-        GameState.setGamePhase(GamePhase.REGISTERED);
+        gameState.setGamePhase(GamePhase.REGISTERED);
     }
 
-    private void registerWithOtherPlayers(Player self, List<PlayerInfo> players) throws IOException {
+    private void registerWithOtherPlayers(Player self, List<dtos.PlayerInfo> players) throws IOException {
         Objects.requireNonNull(players);
 
         CoordinatesOuterClass.Coordinates playerCoordinates = CoordinatesOuterClass.Coordinates.newBuilder()
@@ -51,15 +53,14 @@ public final class RegistrationService {
                 .setCoordY(self.getCoordinates().y())
                 .setListeningPort(self.playerListeningPort())
                 .build();
-        socketClient = new SocketClient(self.playerListeningPort());
 
-        for (PlayerInfo player : players) {
-            OtherPlayer otherPlayer = socketClient.registerWithOtherPlayer(playerCoordinates, player);
+        for (dtos.PlayerInfo playerInfo : players) {
+            OtherPlayer otherPlayer = socketClient.registerWithOtherPlayer(playerCoordinates, playerInfo);
             otherPlayerRepository.addPlayer(otherPlayer);
         }
     }
 
     private void acceptNewRegistrations() {
-        RegistrationWithNewPlayerAcceptThread.startInstance(socketClient, otherPlayerRepository);
+        new RegistrationWithNewPlayerAcceptThread(gameState, socketClient, otherPlayerRepository).start();
     }
 }

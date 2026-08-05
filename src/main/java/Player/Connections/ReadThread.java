@@ -1,5 +1,6 @@
 package Player.Connections;
 
+import Player.service.MessagingService;
 import proto.coordinates.CoordinatesOuterClass;
 import proto.messages.MessageOuterClass.Message;
 
@@ -9,11 +10,11 @@ import java.net.Socket;
 
 public class ReadThread extends Thread {
     private final InputStream inputStream;
-    public Queue queue;
+    private final MessagingService messagingService;
 
-    public ReadThread(Socket socket, Queue queue) throws IOException {
-        inputStream = socket.getInputStream();
-        this.queue = queue;
+    public ReadThread(Socket socket, MessagingService messagingService) throws IOException {
+        this.inputStream = socket.getInputStream();
+        this.messagingService = messagingService;
     }
 
     public InputStream getInputStream() {
@@ -27,7 +28,7 @@ public class ReadThread extends Thread {
     public void run() {
         while (true) {
             try {
-                queue.put(Message.parseDelimitedFrom(inputStream));
+                messagingService.putMessage(Message.parseDelimitedFrom(inputStream));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -1,16 +1,20 @@
 package Player;
 
 import Player.client.AdminServerClient;
+import Player.client.SocketClient;
 import Player.listener.MqttListener;
 import Player.repository.OtherPlayerRepository;
+import Player.repository.dao.GameState;
+import Player.repository.dao.Player;
+import Player.service.ElectionService;
+import Player.service.MessagingService;
 import Player.service.RegistrationService;
 import Player.userinterface.CliController;
-import administration_client.service.MqttService;
+import Player.userinterface.UserInterface;
 import library.ApplicationResourcesHandler;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
+import java.net.ServerSocket;
 import java.net.http.HttpClient;
 
 public class PlayerApplication {
@@ -18,15 +22,31 @@ public class PlayerApplication {
     private static int coordX;
     private static int coordY;
     public static boolean active = true;
-    public static int gamePhase = -1;
 
     public static void main(String[] ignoredArgs) throws Exception {
+        Player localPlayer = createLocalPlayer();
+        GameState gameState = new GameState();
+
         AdminServerClient adminServerClient = createAdminServerClient();
+
         OtherPlayerRepository otherPlayerRepository = new OtherPlayerRepository();
-        RegistrationService registrationService = new RegistrationService(adminServerClient, otherPlayerRepository);
-        startMqttListener();
-        CliController cliController = new CliController(registrationService);
-        cliController.run();
+
+        ElectionService electionService = new ElectionService(gameState, localPlayer, otherPlayerRepository);
+        MessagingService messagingService = new MessagingService(gameState, localPlayer, otherPlayerRepository, electionService);
+
+        ServerSocket serverSocket = new ServerSocket(localPlayer.playerListeningPort());
+        SocketClient socketClient = new SocketClient(serverSocket, messagingService);
+
+        RegistrationService registrationService = new RegistrationService(gameState, localPlayer, adminServerClient, otherPlayerRepository, socketClient);
+
+        registrationService.register();
+
+        startMqttListener(gameState, electionService);
+    }
+
+    private static Player createLocalPlayer() throws Exception {
+        UserInterface userInterface = new CliController();
+        return userInterface.setupLocalPlayer();
     }
 
     private static AdminServerClient createAdminServerClient() {
@@ -35,10 +55,10 @@ public class PlayerApplication {
         return new AdminServerClient(url, httpClient);
     }
 
-    private static void startMqttListener() throws MqttException {
+    private static void startMqttListener(GameState gameState, ElectionService electionService) throws MqttException {
         String broker = ApplicationResourcesHandler.getProperty("mqtt.broker");
         int qos = 2;
-        new MqttListener(broker, qos);
+        new MqttListener(broker, qos, gameState, electionService);
     }
 
     public static int getId() {
@@ -51,10 +71,5 @@ public class PlayerApplication {
 
     public static int getCoordY() {
         return coordY;
-    }
-
-    public static void setCoordXAndCoordY(int coordX, int coordY) {
-        PlayerApplication.coordX = coordX;
-        PlayerApplication.coordY = coordY;
     }
 }

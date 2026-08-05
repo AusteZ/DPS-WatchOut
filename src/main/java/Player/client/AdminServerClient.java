@@ -2,7 +2,6 @@ package Player.client;
 
 import Player.repository.dao.Player;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dtos.PlayerInfo;
 import dtos.RegistrationResponse;
 
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class AdminServerClient {
     }
 
     public RegistrationResponse register(Player self) {
-        PlayerInfo playerInfo = new PlayerInfo(self.playerId(), self.playerListeningPort());
+        dtos.PlayerInfo playerInfo = new dtos.PlayerInfo(self.playerId(), self.playerListeningPort());
 
         try {
             String requestBody = objectMapper.writeValueAsString(playerInfo);
