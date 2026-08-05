@@ -17,10 +17,6 @@ public class ReadThread extends Thread {
         this.messagingService = messagingService;
     }
 
-    public InputStream getInputStream() {
-        return inputStream;
-    }
-
     public CoordinatesOuterClass.Coordinates getCoordinates() throws IOException {
         return CoordinatesOuterClass.Coordinates.parseDelimitedFrom(inputStream);
     }

@@ -17,8 +17,6 @@ public class ElectionAlgorithmThread extends Thread {
     public static int seekerId;
     private static final Object lock = new Object();
 
-    private static ElectionAlgorithmThread electionAlgorithmThread;
-
     private final GameState gameState;
     private final Player localPlayer;
     private final OtherPlayerRepository otherPlayerRepository;
@@ -27,14 +25,6 @@ public class ElectionAlgorithmThread extends Thread {
         this.gameState = gameState;
         this.localPlayer = localPlayer;
         this.otherPlayerRepository = otherPlayerRepository;
-    }
-
-    public static ElectionAlgorithmThread getElectionThread() {
-        if (electionAlgorithmThread == null || !electionAlgorithmThread.isAlive()) {
-            throw new RuntimeException("Election thread has not been started");
-        }
-
-        return electionAlgorithmThread;
     }
 
     @Override
@@ -86,7 +76,7 @@ public class ElectionAlgorithmThread extends Thread {
         synchronized (lock) {
             try {
                 lock.wait(5000);
-                if (!electionAlgorithmThread.isInterrupted()) {
+                if (!Thread.currentThread().isInterrupted()) {
                     gameState.setGamePhase(GamePhase.PLAY);
                     new EliminationThread().start();
                     System.out.println("SEEKER");

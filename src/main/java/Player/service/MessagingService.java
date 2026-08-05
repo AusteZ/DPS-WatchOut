@@ -9,12 +9,13 @@ import proto.messages.MessageOuterClass;
 public final class MessagingService {
     private final MessageEvaluationThread messageEvaluationThread;
 
-    public MessagingService(GameState gameState, Player localPlayer, OtherPlayerRepository otherPlayerRepository, ElectionService electionService) {
-        this.messageEvaluationThread = new MessageEvaluationThread(gameState, localPlayer, otherPlayerRepository, electionService);
-    }
-
-    public void startEvaluatingMessages(){
-        messageEvaluationThread.start();
+    public MessagingService(GameState gameState,
+                            Player localPlayer,
+                            OtherPlayerRepository otherPlayerRepository,
+                            ElectionService electionService,
+                            ActiveGameService activeGameService) {
+        this.messageEvaluationThread = new MessageEvaluationThread(gameState, localPlayer, otherPlayerRepository, electionService, activeGameService);
+        this.messageEvaluationThread.start();
     }
 
     public void putMessage(MessageOuterClass.Message message){

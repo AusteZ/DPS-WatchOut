@@ -1,6 +1,5 @@
 package Player.service;
 
-import Player.DistributedAlgorithms.MutualExclusionAlgorithmThread;
 import Player.enums.GamePhase;
 import Player.repository.OtherPlayerRepository;
 import Player.repository.dao.Coordinates;
@@ -17,11 +16,16 @@ public final class ElectionService {
     private final Player localPlayer;
     private final OtherPlayerRepository otherPlayerRepository;
     private final ElectionAlgorithmThread electionAlgorithmThread;
+    private final ActiveGameService activeGameService;
 
-    public ElectionService(GameState gameState, Player localPlayer, OtherPlayerRepository otherPlayerRepository) {
+    public ElectionService(GameState gameState,
+                           Player localPlayer,
+                           OtherPlayerRepository otherPlayerRepository,
+                           ActiveGameService activeGameService) {
         this.gameState = gameState;
         this.localPlayer = localPlayer;
         this.otherPlayerRepository = otherPlayerRepository;
+        this.activeGameService = activeGameService;
         this.electionAlgorithmThread = new ElectionAlgorithmThread(gameState, localPlayer, otherPlayerRepository);
     }
 
@@ -43,7 +47,7 @@ public final class ElectionService {
         return selfElectionPriority.isHigherPriority(otherElectionPriority);
     }
 
-    public void electionProcess2(MessageOuterClass.Message message) {
+    public void electionProcess(MessageOuterClass.Message message) {
         OtherPlayer otherPlayer = getOtherPlayerById(message.getId());
         GameState.Seeker seeker = gameState.getSeeker();
 
@@ -67,10 +71,9 @@ public final class ElectionService {
 
         if (seeker == null || seeker.seekerCreationTimestamp() > newTimestamp && newTimestamp > 0) {
             gameState.setSeeker(message.getId(), newTimestamp);
-            ElectionAlgorithmThread.getElectionThread().interrupt();
+            electionAlgorithmThread.interrupt();
             System.out.println("SEEKER change to " + seeker.seekerId());
-            gameState.setGamePhase(GamePhase.PLAY);
-            MutualExclusionAlgorithmThread.initializeThread();
+            activeGameService.startActiveGame();
         } else if (localPlayer.playerId() == seeker.seekerId()) {
             OtherPlayer otherPlayer = getOtherPlayerById(message.getId());
             MessageOuterClass.Message seekerMessage = createSeekerMessage(seeker.seekerId(), seeker.seekerCreationTimestamp());

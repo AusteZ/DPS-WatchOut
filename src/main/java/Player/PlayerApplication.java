@@ -6,8 +6,10 @@ import Player.listener.MqttListener;
 import Player.repository.OtherPlayerRepository;
 import Player.repository.dao.GameState;
 import Player.repository.dao.Player;
+import Player.service.ActiveGameService;
 import Player.service.ElectionService;
 import Player.service.MessagingService;
+import Player.service.MovementService;
 import Player.service.RegistrationService;
 import Player.userinterface.CliController;
 import Player.userinterface.UserInterface;
@@ -21,7 +23,6 @@ public class PlayerApplication {
     private static int id;
     private static int coordX;
     private static int coordY;
-    public static boolean active = true;
 
     public static void main(String[] ignoredArgs) throws Exception {
         Player localPlayer = createLocalPlayer();
@@ -31,8 +32,10 @@ public class PlayerApplication {
 
         OtherPlayerRepository otherPlayerRepository = new OtherPlayerRepository();
 
-        ElectionService electionService = new ElectionService(gameState, localPlayer, otherPlayerRepository);
-        MessagingService messagingService = new MessagingService(gameState, localPlayer, otherPlayerRepository, electionService);
+        MovementService movementService = new MovementService(localPlayer);
+        ActiveGameService activeGameService = new ActiveGameService(gameState, localPlayer, otherPlayerRepository, movementService);
+        ElectionService electionService = new ElectionService(gameState, localPlayer, otherPlayerRepository, activeGameService);
+        MessagingService messagingService = new MessagingService(gameState, localPlayer, otherPlayerRepository, electionService, activeGameService);
 
         ServerSocket serverSocket = new ServerSocket(localPlayer.playerListeningPort());
         SocketClient socketClient = new SocketClient(serverSocket, messagingService);

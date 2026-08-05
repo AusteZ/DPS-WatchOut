@@ -1,12 +1,12 @@
 package Player.service.threads;
 
 import Player.Connections.Queue;
-import Player.DistributedAlgorithms.MutualExclusionAlgorithmThread;
 import Player.Gameplay.EliminationThread;
 import Player.enums.GamePhase;
 import Player.repository.OtherPlayerRepository;
 import Player.repository.dao.GameState;
 import Player.repository.dao.Player;
+import Player.service.ActiveGameService;
 import Player.service.ElectionService;
 import proto.messages.MessageOuterClass.Message;
 
@@ -18,13 +18,18 @@ public class MessageEvaluationThread extends Thread {
     private final Player localPlayer;
     private final OtherPlayerRepository otherPlayerRepository;
     private final ElectionService electionService;
-    private static MessageEvaluationThread messageEvaluationThread;
+    private final ActiveGameService activeGameService;
 
-    public MessageEvaluationThread(GameState gameState, Player localPlayer, OtherPlayerRepository otherPlayerRepository, ElectionService electionService) {
+    public MessageEvaluationThread(GameState gameState,
+                                   Player localPlayer,
+                                   OtherPlayerRepository otherPlayerRepository,
+                                   ElectionService electionService,
+                                   ActiveGameService activeGameService) {
         this.gameState = gameState;
         this.localPlayer = localPlayer;
         this.otherPlayerRepository = otherPlayerRepository;
         this.electionService = electionService;
+        this.activeGameService = activeGameService;
     }
 
     public void putMessage(Message message) {
@@ -56,23 +61,24 @@ public class MessageEvaluationThread extends Thread {
     }
 
     private void electionProcess(Message message) {
-        if (GamePhase.PLAY == gameState.getGamePhase() && localPlayer.playerId() == ElectionAlgorithmThread.seekerId) {
+        if (GamePhase.PLAY == gameState.getGamePhase() && localPlayer.playerId() == gameState.getSeeker().seekerId()) {
             electionService.seekerProcess(message);
         }
 
         if (electionService.canStartElection(message)) {
-            electionService.electionProcess2(message);
+            electionService.electionProcess(message);
             electionService.startElection();
         }
     }
 
     private void eliminationProcess(Message message) {
-        if (ElectionAlgorithmThread.seekerId == localPlayer.playerId()) {
+        int seekerId = gameState.getSeeker().seekerId();
+        if (seekerId == localPlayer.playerId()) {
             OtherPlayerRepository otherPlayerRepository = OtherPlayerRepository.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get();
             otherPlayerRepository.active = false;
             System.out.println(message.getId() + " is out");
-        } else if (ElectionAlgorithmThread.seekerId == message.getId()) {
-            if (MutualExclusionAlgorithmThread.ableToBeEliminated()) {
+        } else if (seekerId == message.getId()) {
+            if (activeGameService.canBeEliminated()) {
                 EliminationThread.wasEliminated();
             } else {
                 EliminationThread.cannotBeEliminated();
@@ -86,11 +92,11 @@ public class MessageEvaluationThread extends Thread {
 
     private void okProcess(Message message) {
         OtherPlayerRepository otherPlayerRepository = OtherPlayerRepository.getPlayerList().stream().filter(other -> other.id == message.getId()).findFirst().get();
-        MutualExclusionAlgorithmThread.decreaseCounter();
+        activeGameService.reduceLine();
     }
 
     private void exclusionProcess(Message message) {
-        MutualExclusionAlgorithmThread.exclusionRespond(message);
+        activeGameService.exclusionRespond(message);
     }
 
     private void noProcess(Message message) {

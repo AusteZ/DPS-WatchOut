@@ -19,10 +19,6 @@ public class WriteThread extends Thread {
         coordinates.writeTo(outputStream);
     }
 
-    public OutputStream getOutputStream() {
-        return outputStream;
-    }
-
     public void writeMessage(Message message) {
         queue.put(message);
     }
