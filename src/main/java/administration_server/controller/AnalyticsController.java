@@ -1,7 +1,6 @@
 package administration_server.controller;
 
-import administration_server.service.AverageCalculationService;
-import administration_server.storage.MeasurementStorage;
+import administration_server.service.MeasurementService;
 import dtos.AverageDto;
 import dtos.MeasurementListDto;
 import dtos.TimestampsDto;
@@ -15,10 +14,10 @@ import jakarta.ws.rs.core.Response;
 
 @Path("analytics")
 public class AnalyticsController {
-    private final AverageCalculationService averageCalculationService;
+    private final MeasurementService measurementService;
 
-    public AnalyticsController(AverageCalculationService averageCalculationService) {
-        this.averageCalculationService =  averageCalculationService;
+    public AnalyticsController(MeasurementService measurementService) {
+        this.measurementService = measurementService;
     }
 
     @Path("postmeasurements")
@@ -26,7 +25,7 @@ public class AnalyticsController {
     @Consumes({"application/json", "application/xml"})
     @Produces({"application/json", "application/xml"})
     public Response postMeasurements(MeasurementListDto ml) {
-        MeasurementStorage.addMeasurements(ml);
+        measurementService.addMeasurements(ml);
         return Response.ok().build();
     }
 
@@ -35,7 +34,7 @@ public class AnalyticsController {
     @Produces({"application/json", "application/xml"})
     public Response getLastNMeasurements(@PathParam("playerId") int playerId, @PathParam("lastMeasurementCount") int lastMeasurementCount) {
         try {
-            double average = averageCalculationService.calculateLatestMeasurementAverage(playerId, lastMeasurementCount);
+            double average = measurementService.calculateLatestMeasurementAverage(playerId, lastMeasurementCount);
             AverageDto response = new AverageDto(average);
             return Response.ok(response).build();
         } catch (Exception e) {
@@ -47,7 +46,7 @@ public class AnalyticsController {
     @POST
     @Produces({"application/json", "application/xml"})
     public Response getMeasurementsBetweenTimestamps(TimestampsDto timestampsDto) {
-        double average = averageCalculationService.calculateMeasurementAverageBetweenTimestamps(timestampsDto.startTimestamp(), timestampsDto.endTimestamp());
+        double average = measurementService.calculateMeasurementAverageBetweenTimestamps(timestampsDto.startTimestamp(), timestampsDto.endTimestamp());
         if (average <= 0) {
             return Response.status(Response.Status.BAD_REQUEST).entity("No values between the two timestamps").build();
         }

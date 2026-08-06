@@ -1,28 +1,23 @@
 package administration_server;
 
-import administration_server.helper.BinderHelper;
-import administration_server.handler.ReceivingServerHandler;
+import administration_server.config.Configuration;
+import administration_server.repository.MeasurementRepository;
 import administration_server.userinterface.ConsoleUserInterface;
 import administration_server.userinterface.UserInterface;
-import library.ApplicationResourcesHandler;
-import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.grizzly.http.server.HttpServer;
 
 import java.io.IOException;
 
 public final class AdministrationServer {
 
     public static void main(String[] ignoredArgs) throws IOException {
-        ReceivingServerHandler serverService = getServer();
-        serverService.start();
+        Configuration config = new Configuration();
+        MeasurementRepository measurementRepository = new MeasurementRepository();
+
+        HttpServer httpServer = config.startServer(measurementRepository);
 
         UserInterface userInterface = ConsoleUserInterface.getInstance();
-        userInterface.runInterface(serverService);
-    }
-
-    private static ReceivingServerHandler getServer() {
-        String host = ApplicationResourcesHandler.getProperty("server.host");
-        int port = Integer.parseInt(ApplicationResourcesHandler.getProperty("server.port"));
-        ResourceConfig config = BinderHelper.createConfig();
-        return ReceivingServerHandler.getInstance(host, port, config);
+        userInterface.runInterface();
+        httpServer.shutdown();
     }
 }

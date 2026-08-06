@@ -4,7 +4,7 @@ import player.repository.dao.Coordinates;
 
 import static player.repository.GameState.HOMEBASE_COORDINATES;
 
-public class DistanceUtils {
+public final class DistanceUtils {
     private DistanceUtils() {
         throw new IllegalStateException("Utility class");
     }

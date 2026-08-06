@@ -1,4 +1,4 @@
-package administration_server.storage;
+package administration_server.repository;
 
 import Exceptions.UnitializedPlayerException;
 import dtos.MeasurementListDto;
@@ -10,13 +10,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-public final class MeasurementStorage {
-    static final HashMap<Integer, ArrayList<MeasurementListDto>> storage = new HashMap<>();
+public class MeasurementRepository {
+    private final HashMap<Integer, List<MeasurementValue>> measurementValuesByPlayerId = new HashMap<>();
 
-    private final static HashMap<Integer, List<MeasurementValue>> measurementValuesByPlayerId = new HashMap<>();
-
-
-    public static void addMeasurements(MeasurementListDto measurementListDto) {
+    public void addMeasurements(MeasurementListDto measurementListDto) {
         synchronized (measurementValuesByPlayerId) {
             if (!measurementValuesByPlayerId.containsKey(measurementListDto.id())) {
                 measurementValuesByPlayerId.put(measurementListDto.id(), new ArrayList<>());
@@ -28,7 +25,7 @@ public final class MeasurementStorage {
         }
     }
 
-    public static List<MeasurementValue> getLastestMeasurements(int playerId, int count) throws UnitializedPlayerException {
+    public List<MeasurementValue> getLastestMeasurements(int playerId, int count) throws UnitializedPlayerException {
         synchronized (measurementValuesByPlayerId) {
             List<MeasurementValue> measurements = measurementValuesByPlayerId.get(playerId);
             if (measurements == null) {
@@ -46,7 +43,7 @@ public final class MeasurementStorage {
         }
     }
 
-    public static List<MeasurementValue> getMeasurementsBetweenTimestamps(long startTimestamp, long endTimestamp){
+    public List<MeasurementValue> getMeasurementsBetweenTimestamps(long startTimestamp, long endTimestamp) {
         synchronized (measurementValuesByPlayerId) {
             List<MeasurementValue> measurements = measurementValuesByPlayerId.values()
                     .stream()
@@ -54,10 +51,10 @@ public final class MeasurementStorage {
                     .sorted(Comparator.comparingLong(MeasurementValue::timestamp))
                     .toList();
 
-            MeasurementValue startTimestampMeasurement = new MeasurementValue(startTimestamp,0);
+            MeasurementValue startTimestampMeasurement = new MeasurementValue(startTimestamp, 0);
             int firstIndex = Collections.binarySearch(measurements, startTimestampMeasurement, Comparator.comparingLong(MeasurementValue::timestamp));
 
-            MeasurementValue endTimestampMeasurement = new MeasurementValue(endTimestamp,0);
+            MeasurementValue endTimestampMeasurement = new MeasurementValue(endTimestamp, 0);
             int lastIndex = Collections.binarySearch(measurements, endTimestampMeasurement, Comparator.comparingLong(MeasurementValue::timestamp));
             lastIndex = Math.min(measurements.size(), 1 + lastIndex);
             List<MeasurementValue> measurementSublist = measurements.subList(firstIndex, lastIndex);
