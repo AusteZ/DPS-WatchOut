@@ -16,7 +16,7 @@ import player.service.game.MovementService;
 import player.service.messaging.MessagingService;
 import player.service.registration.RegistrationService;
 import player.service.simulation.HeartRateSimulationService;
-import player.userinterface.CliController;
+import player.userinterface.CLI;
 import player.userinterface.UserInterface;
 
 import java.net.ServerSocket;
@@ -54,7 +54,7 @@ public class PlayerApplication {
     }
 
     private static Player createLocalPlayer() throws Exception {
-        UserInterface userInterface = new CliController();
+        UserInterface userInterface = new CLI();
         return userInterface.setupLocalPlayer();
     }
 }

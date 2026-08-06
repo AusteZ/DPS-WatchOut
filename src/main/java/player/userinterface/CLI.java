@@ -7,12 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.function.IntPredicate;
 
-public final class CliController implements UserInterface {
-    BufferedReader reader =
-            new BufferedReader(new InputStreamReader(System.in));
-
-    public CliController() {
-    }
+public final class CLI implements UserInterface {
+    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public Player setupLocalPlayer() throws Exception {
         int playerId = getPlayerId();
@@ -44,14 +40,18 @@ public final class CliController implements UserInterface {
                     return value;
                 }
 
-                print(errorMessage);
+                printError(errorMessage);
             } catch (NumberFormatException e) {
-                print("Please enter a number");
+                printError("Please enter a number");
             }
         }
     }
 
-    private void print(String introductory) {
+    private void print(String message) {
+        System.out.println("UI: " + message);
+    }
+
+    private void printError(String message){
 
     }
 }
