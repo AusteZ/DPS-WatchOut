@@ -1,30 +1,30 @@
 package administration_client.userinterface;
 
+import administration_client.client.AdminServerClient;
 import administration_client.service.MqttService;
-import administration_client.client.AdminClient;
 import dtos.PlayerInfo;
 
 import java.util.List;
 
 public class UserInterfaceBridgeImpl implements UserInterfaceBridge {
-    private final AdminClient adminClient;
+    private final AdminServerClient adminServerClient;
     private final MqttService mqttService;
 
-    public UserInterfaceBridgeImpl(AdminClient adminClient, MqttService mqttService) {
-        this.adminClient = adminClient;
+    public UserInterfaceBridgeImpl(AdminServerClient adminServerClient, MqttService mqttService) {
+        this.adminServerClient = adminServerClient;
         this.mqttService = mqttService;
     }
 
     public List<PlayerInfo> getAllPlayers() {
-        return adminClient.getAllPlayers();
+        return adminServerClient.getAllPlayers();
     }
 
     public double getLatestMeasurementAverage(int playerId, int count) {
-        return adminClient.getLatestMeasurementAverage(playerId, count);
+        return adminServerClient.getLatestMeasurementAverage(playerId, count);
     }
 
     public double getMeasurementAverageBetweenTimestamps(Long startTimestamp, Long endTimestamp) {
-        return adminClient.getMeasurementAverageBetweenTimestamps(startTimestamp, endTimestamp);
+        return adminServerClient.getMeasurementAverageBetweenTimestamps(startTimestamp, endTimestamp);
     }
 
     public void startGame() {

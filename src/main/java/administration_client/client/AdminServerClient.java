@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dtos.AverageDto;
 import dtos.PlayerInfo;
-import dtos.Players;
+import dtos.PlayersDto;
 import dtos.TimestampsDto;
 import jakarta.ws.rs.core.UriBuilder;
 
@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AdminClient {
-    private final static Logger LOGGER = Logger.getLogger(AdminClient.class.getName());
+public class AdminServerClient {
+    private final static Logger LOGGER = Logger.getLogger(AdminServerClient.class.getName());
 
     private final String baseUrl;
     private final HttpClient httpClient;
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public AdminClient(String url, HttpClient httpClient) {
+    public AdminServerClient(String url, HttpClient httpClient) {
         this.baseUrl = url;
         this.httpClient = httpClient;
     }
@@ -54,8 +54,9 @@ public class AdminClient {
             return List.of();
         }
 
-        Players players = objectMapper.readValue(response.body(), Players.class);
-        return players.getPlayersList();
+        PlayersDto players = objectMapper.readValue(response.body(), PlayersDto.class);
+
+        return players.playersList();
     }
 
     public double getMeasurementAverageBetweenTimestamps(Long startTimestamp, Long endTimestamp) {

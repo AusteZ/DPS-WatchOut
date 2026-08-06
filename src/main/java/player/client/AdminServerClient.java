@@ -33,19 +33,7 @@ public class AdminServerClient {
         dtos.PlayerInfo playerInfo = new dtos.PlayerInfo(self.playerId(), self.playerListeningPort());
 
         try {
-            String requestBody = objectMapper.writeValueAsString(playerInfo);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(registrationUrl))
-                    .header("Content-Type", "application/json")
-                    .header("Accept", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                    .build();
-
-            HttpResponse<String> response = client.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofString()
-            );
+            HttpResponse<String> response = sendRequest(playerInfo, registrationUrl);
 
             if (response.statusCode() != 200) {
                 translateError(response);
@@ -65,23 +53,26 @@ public class AdminServerClient {
     }
 
     public void postMeasurements(MeasurementListDto measurementListDto) throws IOException, InterruptedException {
-        String requestBody = objectMapper.writeValueAsString(measurementListDto);
+        HttpResponse<String> response = sendRequest(measurementListDto, analyticsUrl);
 
+        if (response.statusCode() != 200) {
+            System.out.println(response.statusCode() + " " + response.body());
+        }
+    }
+
+    private HttpResponse<String> sendRequest(Object requestObject, String url) throws IOException, InterruptedException {
+        String requestBody = objectMapper.writeValueAsString(requestObject);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(analyticsUrl))
+                .uri(URI.create(url))
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
 
-        HttpResponse<String> response = client.send(
+        return client.send(
                 request,
                 HttpResponse.BodyHandlers.ofString()
         );
-
-        if (response.statusCode() != 200) {
-            System.out.println(response.statusCode() + " " + response.body());
-        }
     }
 
     private void translateError(HttpResponse<String> response) throws IllegalAccessException {

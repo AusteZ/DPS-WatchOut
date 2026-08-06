@@ -1,6 +1,6 @@
 package administration_client;
 
-import administration_client.client.AdminClient;
+import administration_client.client.AdminServerClient;
 import administration_client.service.MqttService;
 import administration_client.userinterface.ConsoleUserInterface;
 import administration_client.userinterface.UserInterface;
@@ -16,19 +16,19 @@ import java.net.http.HttpClient;
 public class AdministrationClient {
 
     public static void main(String[] ignoredArgs) throws MqttException {
-        AdminClient adminClient = getAdminClient();
+        AdminServerClient adminServerClient = getAdminClient();
         MqttService mqttService = getMqttService();
 
-        UserInterfaceBridge userInterfaceBridge = new UserInterfaceBridgeImpl(adminClient, mqttService);
+        UserInterfaceBridge userInterfaceBridge = new UserInterfaceBridgeImpl(adminServerClient, mqttService);
         UserInterface userInterface = ConsoleUserInterface.getInstance(userInterfaceBridge);
 
         userInterface.runInterface();
     }
 
-    private static AdminClient getAdminClient() {
+    private static AdminServerClient getAdminClient() {
         String url = ApplicationResourcesHandler.getProperty("server.url");
         HttpClient httpClient = HttpClient.newBuilder().build();
-        return new AdminClient(url, httpClient);
+        return new AdminServerClient(url, httpClient);
     }
 
     private static MqttService getMqttService() throws MqttException {
