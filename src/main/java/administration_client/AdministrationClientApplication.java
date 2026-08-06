@@ -13,7 +13,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.net.http.HttpClient;
 
-public class AdministrationClient {
+public class AdministrationClientApplication {
 
     public static void main(String[] ignoredArgs) throws MqttException {
         AdminServerClient adminServerClient = getAdminClient();
