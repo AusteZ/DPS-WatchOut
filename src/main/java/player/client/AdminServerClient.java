@@ -18,7 +18,6 @@ public class AdminServerClient {
     private static final String ANALYTICS_PATH = "/analytics/postmeasurements";
 
 
-
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String registrationUrl;
     private final String analyticsUrl;

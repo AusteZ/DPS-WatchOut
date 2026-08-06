@@ -32,10 +32,10 @@ public final class RegistrationService {
 
     public void register() throws IOException {
         RegistrationResponse response = adminServerClient.register(localPlayer);
-        Coordinates coordinates = new Coordinates(response.getCoordinateX(), response.getCoordinateY());
+        Coordinates coordinates = new Coordinates(response.assignedCoordinates().x(), response.assignedCoordinates().y());
         localPlayer.setCoordinates(coordinates);
 
-        registerWithOtherPlayers(localPlayer, response.getPlayerList());
+        registerWithOtherPlayers(localPlayer, response.players());
         acceptNewRegistrations();
 
         gameState.setGamePhase(GamePhase.REGISTERED);

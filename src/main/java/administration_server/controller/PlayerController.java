@@ -24,9 +24,8 @@ public class PlayerController {
     @Consumes({"application/json", "application/xml"})
     @Produces({"application/json", "application/xml"})
     public Response registerPlayer(PlayerInfo player) {
-        RegistrationResponse response = new RegistrationResponse();
         try {
-            playerService.registerPlayer(player);
+            RegistrationResponse response = playerService.registerPlayer(player);
             return Response.ok(response).build();
         } catch (Exception e) {
             return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
