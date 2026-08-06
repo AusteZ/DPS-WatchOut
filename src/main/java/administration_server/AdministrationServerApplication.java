@@ -9,7 +9,7 @@ import org.glassfish.grizzly.http.server.HttpServer;
 
 import java.io.IOException;
 
-public final class AdministrationServer {
+public final class AdministrationServerApplication {
 
     public static void main(String[] ignoredArgs) throws IOException {
         Configuration config = new Configuration();
