@@ -1,6 +1,7 @@
 package administration_client.config;
 
 import administration_client.client.AdminServerClient;
+import library.HttpClientWrapper;
 import library.ResourceHandler;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -21,7 +22,8 @@ public class Configuration {
     public AdminServerClient getAdminServerClient() {
         String url = resourceHandler.getProperty("server.url");
         HttpClient httpClient = HttpClient.newBuilder().build();
-        return new AdminServerClient(url, httpClient);
+        HttpClientWrapper httpClientWrapper = new HttpClientWrapper(httpClient);
+        return new AdminServerClient(url, httpClientWrapper);
     }
 
     public MqttClient getMqttClient() throws MqttException {

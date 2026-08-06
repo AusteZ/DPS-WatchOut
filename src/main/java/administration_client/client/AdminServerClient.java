@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.UriBuilder;
 import library.HttpClientWrapper;
 
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -26,15 +25,13 @@ public class AdminServerClient {
     private final String analyticsBetweenUrl;
     private final String analyticsLastUrl;
 
-    private final HttpClient httpClient;
     private final HttpClientWrapper httpClientWrapper;
 
-    public AdminServerClient(String url, HttpClient httpClient) {
+    public AdminServerClient(String url, HttpClientWrapper httpClientWrapper) {
         this.getPlayersUrl = url + GET_PLAYERS_PATH;
         this.analyticsBetweenUrl = url + ANALYTICS_BETWEEN_PATH;
         this.analyticsLastUrl = url + ANALYTICS_LAST_PATH;
-        this.httpClient = httpClient;
-        this.httpClientWrapper = new HttpClientWrapper(httpClient);
+        this.httpClientWrapper = httpClientWrapper;
 
     }
 

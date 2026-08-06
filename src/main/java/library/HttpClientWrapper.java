@@ -86,7 +86,6 @@ public class HttpClientWrapper {
     }
 
     public <T> T readBody(HttpResponse<String> response, Class<T> responseType) {
-
         if (response.body() == null || response.body().isBlank()) {
             throw new HttpClientException.HttpResponseException("Response body is null or empty");
         }
