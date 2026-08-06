@@ -2,7 +2,7 @@ package library;
 
 import java.util.ResourceBundle;
 
-public class ResourceHandler {
+public final class ResourceHandler {
     private final ResourceBundle resourceBundle;
 
     public ResourceHandler(String profile){
