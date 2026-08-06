@@ -4,8 +4,8 @@ import player.Connections.ReadThread;
 import player.Connections.WriteThread;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
-import player.service.MessagingService;
-import proto.coordinates.CoordinatesOuterClass;
+import player.service.messaging.MessagingService;
+import proto.coordinates.RegistrationRequestOuterClass.RegistrationRequest;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -20,26 +20,25 @@ public class SocketClient {
         this.welcomeSocket = welcomeSocket;
     }
 
-    public OtherPlayer registerWithOtherPlayer(CoordinatesOuterClass.Coordinates playerCoordinates, dtos.PlayerInfo otherPlayerInfo) throws IOException {
+    public OtherPlayer registerWithOtherPlayer(RegistrationRequest registrationRequest, dtos.PlayerInfo otherPlayerInfo) throws IOException {
         WriteThread otherPlayerWriteThread = createWriteThread(otherPlayerInfo.ipAddress(), otherPlayerInfo.listeningPort());
-        otherPlayerWriteThread.writeCoordinates(playerCoordinates);
+        otherPlayerWriteThread.writeRegistrationRequest(registrationRequest);
 
         ReadThread otherPlayerReadThread = createReadThread();
 
-        CoordinatesOuterClass.Coordinates coords = otherPlayerReadThread.getCoordinates();
+        RegistrationRequest otherPlayerRegistrationRequest = otherPlayerReadThread.getRegistrationRequest();
 
-        return createOtherPlayer(coords, otherPlayerWriteThread, otherPlayerReadThread);
+        return createOtherPlayer(otherPlayerRegistrationRequest, otherPlayerWriteThread, otherPlayerReadThread);
     }
 
-    public OtherPlayer acceptRegistrationWithOtherPlayers(CoordinatesOuterClass.Coordinates coordinates) throws IOException {
+    public OtherPlayer acceptRegistrationWithOtherPlayers(RegistrationRequest registrationRequest) throws IOException {
         ReadThread otherPlayerReadThread = createReadThread();
+        RegistrationRequest otherPlayerRegistrationRequest = otherPlayerReadThread.getRegistrationRequest();
 
-        CoordinatesOuterClass.Coordinates coords = otherPlayerReadThread.getCoordinates();
+        WriteThread otherPlayerWriteThread = createWriteThread("localhost", otherPlayerRegistrationRequest.getListeningPort());
+        otherPlayerWriteThread.writeRegistrationRequest(registrationRequest);
 
-        WriteThread otherPlayerWriteThread = createWriteThread("localhost", coords.getListeningPort());
-        otherPlayerWriteThread.writeCoordinates(coordinates);
-
-        return createOtherPlayer(coords, otherPlayerWriteThread, otherPlayerReadThread);
+        return createOtherPlayer(registrationRequest, otherPlayerWriteThread, otherPlayerReadThread);
     }
 
     private WriteThread createWriteThread(String host, int port) throws IOException {
@@ -52,9 +51,8 @@ public class SocketClient {
         return new ReadThread(otherPlayerWriteSocket, messagingService);
     }
 
-    private OtherPlayer createOtherPlayer(CoordinatesOuterClass.Coordinates coords, WriteThread writeThread, ReadThread readThread) throws IOException {
-        Player player = new Player(coords.getListeningPort(), coords.getId());
+    private OtherPlayer createOtherPlayer(RegistrationRequest request, WriteThread writeThread, ReadThread readThread) {
+        Player player = new Player(request.getListeningPort(), request.getId());
         return new OtherPlayer(player, writeThread, readThread);
     }
-
 }

@@ -1,4 +1,4 @@
-package player.service;
+package player.service.election;
 
 import player.enums.GamePhase;
 import player.repository.OtherPlayerRepository;
@@ -6,7 +6,8 @@ import player.repository.dao.Coordinates;
 import player.repository.dao.GameState;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
-import player.service.threads.ElectionAlgorithmThread;
+import player.service.game.ActiveGameService;
+import player.service.game.EliminationService;
 import player.utils.DistanceUtils;
 import player.utils.ElectionPriority;
 import proto.messages.MessageOuterClass;

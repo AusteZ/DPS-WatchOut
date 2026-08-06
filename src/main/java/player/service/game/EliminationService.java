@@ -1,10 +1,9 @@
-package player.service;
+package player.service.game;
 
 import player.repository.OtherPlayerRepository;
 import player.repository.dao.GameState;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
-import player.service.threads.EliminationThread;
 import proto.messages.MessageOuterClass;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package player.service.threads;
+package player.service.messaging;
 
 import player.Connections.Queue;
 import player.enums.GamePhase;
@@ -6,9 +6,9 @@ import player.repository.OtherPlayerRepository;
 import player.repository.dao.GameState;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
-import player.service.ActiveGameService;
-import player.service.ElectionService;
-import player.service.EliminationService;
+import player.service.election.ElectionService;
+import player.service.game.ActiveGameService;
+import player.service.game.EliminationService;
 import proto.messages.MessageOuterClass.Message;
 
 

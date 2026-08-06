@@ -1,5 +1,6 @@
-package player.service;
+package player.service.registration;
 
+import dtos.RegistrationResponse;
 import player.HRSimulation.HRCollectValues;
 import player.client.AdminServerClient;
 import player.client.SocketClient;
@@ -9,9 +10,7 @@ import player.repository.dao.Coordinates;
 import player.repository.dao.GameState;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
-import player.service.threads.RegistrationWithNewPlayerAcceptThread;
-import dtos.RegistrationResponse;
-import proto.coordinates.CoordinatesOuterClass;
+import proto.coordinates.RegistrationRequestOuterClass.RegistrationRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -47,15 +46,19 @@ public final class RegistrationService {
     private void registerWithOtherPlayers(Player self, List<dtos.PlayerInfo> players) throws IOException {
         Objects.requireNonNull(players);
 
-        CoordinatesOuterClass.Coordinates playerCoordinates = CoordinatesOuterClass.Coordinates.newBuilder()
+        RegistrationRequest.Coordinates coordinates = RegistrationRequest.Coordinates.newBuilder()
+                .setX(self.getCoordinates().x())
+                .setY(self.getCoordinates().y())
+                .build();
+
+        RegistrationRequest registrationRequest = RegistrationRequest.newBuilder()
                 .setId(self.playerId())
-                .setCoordX(self.getCoordinates().x())
-                .setCoordY(self.getCoordinates().y())
+                .setCoordinates(coordinates)
                 .setListeningPort(self.playerListeningPort())
                 .build();
 
         for (dtos.PlayerInfo playerInfo : players) {
-            OtherPlayer otherPlayer = socketClient.registerWithOtherPlayer(playerCoordinates, playerInfo);
+            OtherPlayer otherPlayer = socketClient.registerWithOtherPlayer(registrationRequest, playerInfo);
             otherPlayerRepository.addPlayer(otherPlayer);
         }
     }

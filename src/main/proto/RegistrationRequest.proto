@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package proto.coordinates;
+
+message RegistrationRequest {
+  message Coordinates {
+    int32 x = 2;
+    int32 y = 3;
+  }
+
+  int32 id = 1;
+  Coordinates coordinates = 2;
+  int32 listeningPort = 3;
+}

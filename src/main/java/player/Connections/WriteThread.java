@@ -1,6 +1,6 @@
 package player.Connections;
 
-import proto.coordinates.CoordinatesOuterClass;
+import proto.coordinates.RegistrationRequestOuterClass.RegistrationRequest;
 import proto.messages.MessageOuterClass.Message;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class WriteThread extends Thread {
         outputStream = socket.getOutputStream();
     }
 
-    public void writeCoordinates(CoordinatesOuterClass.Coordinates coordinates) throws IOException {
+    public void writeRegistrationRequest(RegistrationRequest coordinates) throws IOException {
         coordinates.writeTo(outputStream);
     }
 

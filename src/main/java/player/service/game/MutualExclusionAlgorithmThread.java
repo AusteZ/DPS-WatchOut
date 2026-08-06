@@ -1,11 +1,10 @@
-package player.service.threads;
+package player.service.game;
 
 import player.Connections.WriteThread;
 import player.repository.OtherPlayerRepository;
 import player.repository.dao.GameState;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
-import player.service.MovementService;
 import proto.messages.MessageOuterClass;
 import proto.messages.MessageOuterClass.Message;
 

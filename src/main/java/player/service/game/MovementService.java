@@ -1,4 +1,4 @@
-package player.service;
+package player.service.game;
 
 import player.repository.dao.Coordinates;
 import player.repository.dao.Player;

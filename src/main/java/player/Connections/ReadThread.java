@@ -1,7 +1,7 @@
 package player.Connections;
 
-import player.service.MessagingService;
-import proto.coordinates.CoordinatesOuterClass;
+import player.service.messaging.MessagingService;
+import proto.coordinates.RegistrationRequestOuterClass.RegistrationRequest;
 import proto.messages.MessageOuterClass.Message;
 
 import java.io.IOException;
@@ -17,8 +17,8 @@ public class ReadThread extends Thread {
         this.messagingService = messagingService;
     }
 
-    public CoordinatesOuterClass.Coordinates getCoordinates() throws IOException {
-        return CoordinatesOuterClass.Coordinates.parseDelimitedFrom(inputStream);
+    public RegistrationRequest getRegistrationRequest() throws IOException {
+        return RegistrationRequest.parseDelimitedFrom(inputStream);
     }
 
     public void run() {

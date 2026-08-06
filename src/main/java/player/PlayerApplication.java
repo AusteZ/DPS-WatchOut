@@ -1,5 +1,7 @@
 package player;
 
+import library.ApplicationResourcesHandler;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import player.HRSimulation.HRSendToServerThread;
 import player.client.AdminServerClient;
 import player.client.SocketClient;
@@ -7,16 +9,14 @@ import player.listener.MqttListener;
 import player.repository.OtherPlayerRepository;
 import player.repository.dao.GameState;
 import player.repository.dao.Player;
-import player.service.ActiveGameService;
-import player.service.ElectionService;
-import player.service.EliminationService;
-import player.service.MessagingService;
-import player.service.MovementService;
-import player.service.RegistrationService;
+import player.service.election.ElectionService;
+import player.service.game.ActiveGameService;
+import player.service.game.EliminationService;
+import player.service.game.MovementService;
+import player.service.messaging.MessagingService;
+import player.service.registration.RegistrationService;
 import player.userinterface.CliController;
 import player.userinterface.UserInterface;
-import library.ApplicationResourcesHandler;
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.net.ServerSocket;
 import java.net.http.HttpClient;

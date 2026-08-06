@@ -1,9 +1,8 @@
-package player.service.threads;
+package player.service.game;
 
 import player.repository.OtherPlayerRepository;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
-import player.service.MovementService;
 import player.utils.DistanceUtils;
 import proto.messages.MessageOuterClass.Message;
 
