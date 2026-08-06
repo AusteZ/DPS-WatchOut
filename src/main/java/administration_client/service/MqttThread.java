@@ -4,7 +4,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-public class MqttThread extends Thread {
+class MqttThread extends Thread {
     private final MqttClient mqttClient;
     private final String payload;
     private final String topic;
