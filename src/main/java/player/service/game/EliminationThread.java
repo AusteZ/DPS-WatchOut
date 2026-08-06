@@ -8,7 +8,7 @@ import proto.messages.MessageOuterClass.Message;
 
 import java.util.List;
 
-public class EliminationThread extends Thread {
+final class EliminationThread extends Thread {
     private final Player localPlayer;
     private final OtherPlayerRepository otherPlayerRepository;
     private final MovementService movementService;

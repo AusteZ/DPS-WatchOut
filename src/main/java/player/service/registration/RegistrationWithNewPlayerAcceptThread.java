@@ -1,13 +1,11 @@
 package player.service.registration;
 
 import player.client.SocketClient;
-import player.enums.GamePhase;
+import player.repository.GameState;
 import player.repository.OtherPlayerRepository;
-import player.repository.dao.GameState;
 import player.repository.dao.OtherPlayer;
-import player.service.election.ElectionAlgorithmThread;
 
-public class RegistrationWithNewPlayerAcceptThread extends Thread {
+final class RegistrationWithNewPlayerAcceptThread extends Thread {
     private final GameState gameState;
     private final SocketClient socketClient;
     private final OtherPlayerRepository otherPlayerRepository;
@@ -21,20 +19,21 @@ public class RegistrationWithNewPlayerAcceptThread extends Thread {
 
     @Override
     public void run() {
-        while(true){
-            try{
+        while (true) {
+            try {
                 acceptRegistration();
-            } catch(Exception e){
+            } catch (Exception e) {
             }
         }
     }
 
-    private void acceptRegistration() throws Exception{
+    private void acceptRegistration() throws Exception {
         OtherPlayer otherPlayer = socketClient.acceptRegistrationWithOtherPlayers(null);
         otherPlayerRepository.addPlayer(otherPlayer);
 
-        if (gameState.getGamePhase() == GamePhase.PLAY && gameState.getSeeker().seekerId() == ElectionAlgorithmThread.seekerId) {
-            //ElectionAlgorithmThread.coordinatorRespond(other);
-        }
+        //TODO: fix
+        //if (gameState.getGamePhase() == GamePhase.PLAY && gameState.getSeeker().seekerId() == .seekerId) {
+        //ElectionAlgorithmThread.coordinatorRespond(other);
+        //}
     }
 }

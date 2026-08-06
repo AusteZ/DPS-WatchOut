@@ -2,7 +2,7 @@ package player.utils;
 
 import player.repository.dao.Coordinates;
 
-import static player.repository.dao.GameState.HOMEBASE_COORDINATES;
+import static player.repository.GameState.HOMEBASE_COORDINATES;
 
 public class DistanceUtils {
     private DistanceUtils() {

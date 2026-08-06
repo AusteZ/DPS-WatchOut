@@ -1,9 +1,9 @@
 package player.service.messaging;
 
-import player.Connections.Queue;
 import player.enums.GamePhase;
+import player.repository.GameState;
 import player.repository.OtherPlayerRepository;
-import player.repository.dao.GameState;
+import player.repository.Queue;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
 import player.service.election.ElectionService;
@@ -12,7 +12,7 @@ import player.service.game.EliminationService;
 import proto.messages.MessageOuterClass.Message;
 
 
-public class MessageEvaluationThread extends Thread {
+final class MessageEvaluationThread extends Thread {
     private final Queue queue = new Queue();
 
     private final GameState gameState;

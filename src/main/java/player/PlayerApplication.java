@@ -1,13 +1,15 @@
 package player;
 
+import Simulators.Buffer;
 import library.ApplicationResourcesHandler;
 import org.eclipse.paho.client.mqttv3.MqttException;
-import player.HRSimulation.HRSendToServerThread;
 import player.client.AdminServerClient;
 import player.client.SocketClient;
 import player.listener.MqttListener;
+import player.repository.GameState;
+import player.repository.HRBuffer;
+import player.repository.MeasurementValueRepository;
 import player.repository.OtherPlayerRepository;
-import player.repository.dao.GameState;
 import player.repository.dao.Player;
 import player.service.election.ElectionService;
 import player.service.game.ActiveGameService;
@@ -15,6 +17,7 @@ import player.service.game.EliminationService;
 import player.service.game.MovementService;
 import player.service.messaging.MessagingService;
 import player.service.registration.RegistrationService;
+import player.service.simulation.HeartRateSimulationService;
 import player.userinterface.CliController;
 import player.userinterface.UserInterface;
 
@@ -27,9 +30,7 @@ public class PlayerApplication {
         Player localPlayer = createLocalPlayer();
         GameState gameState = new GameState();
 
-        String url = ApplicationResourcesHandler.getProperty("server.url");
-        HttpClient httpClient = HttpClient.newBuilder().build();
-        AdminServerClient adminServerClient = new AdminServerClient(url, httpClient);
+        AdminServerClient adminServerClient = createAdminServerClient();
 
         OtherPlayerRepository otherPlayerRepository = new OtherPlayerRepository();
 
@@ -44,15 +45,24 @@ public class PlayerApplication {
 
         RegistrationService registrationService = new RegistrationService(gameState, localPlayer, adminServerClient, otherPlayerRepository, socketClient);
 
-        registrationService.register();
-        new HRSendToServerThread(localPlayer, httpClient, url).start();
+        Buffer buffer = new HRBuffer();
+        MeasurementValueRepository measurementValueRepository = new MeasurementValueRepository();
+        HeartRateSimulationService heartRateSimulationService = new HeartRateSimulationService(localPlayer, buffer, adminServerClient, measurementValueRepository);
 
+        registrationService.register();
+        heartRateSimulationService.startHeartRateSimulation();
         startMqttListener(gameState, electionService);
     }
 
     private static Player createLocalPlayer() throws Exception {
         UserInterface userInterface = new CliController();
         return userInterface.setupLocalPlayer();
+    }
+
+    private static AdminServerClient createAdminServerClient(){
+        String url = ApplicationResourcesHandler.getProperty("server.url");
+        HttpClient httpClient = HttpClient.newBuilder().build();
+        return new AdminServerClient(url, httpClient);
     }
 
     private static void startMqttListener(GameState gameState, ElectionService electionService) throws MqttException {

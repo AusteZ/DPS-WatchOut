@@ -1,13 +1,12 @@
 package player.service.registration;
 
 import dtos.RegistrationResponse;
-import player.HRSimulation.HRCollectValues;
 import player.client.AdminServerClient;
 import player.client.SocketClient;
 import player.enums.GamePhase;
+import player.repository.GameState;
 import player.repository.OtherPlayerRepository;
 import player.repository.dao.Coordinates;
-import player.repository.dao.GameState;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
 import proto.coordinates.RegistrationRequestOuterClass.RegistrationRequest;
@@ -39,7 +38,6 @@ public final class RegistrationService {
         registerWithOtherPlayers(localPlayer, response.getPlayerList());
         acceptNewRegistrations();
 
-        (new HRCollectValues()).start();
         gameState.setGamePhase(GamePhase.REGISTERED);
     }
 

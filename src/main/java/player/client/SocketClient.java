@@ -1,9 +1,9 @@
 package player.client;
 
-import player.Connections.ReadThread;
-import player.Connections.WriteThread;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
+import player.repository.dao.ReadThread;
+import player.repository.dao.WriteThread;
 import player.service.messaging.MessagingService;
 import proto.coordinates.RegistrationRequestOuterClass.RegistrationRequest;
 

@@ -1,4 +1,4 @@
-package player.Connections;
+package player.repository.dao;
 
 import player.service.messaging.MessagingService;
 import proto.coordinates.RegistrationRequestOuterClass.RegistrationRequest;

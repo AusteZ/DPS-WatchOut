@@ -1,9 +1,9 @@
 package player.service.election;
 
 import player.enums.GamePhase;
+import player.repository.GameState;
 import player.repository.OtherPlayerRepository;
 import player.repository.dao.Coordinates;
-import player.repository.dao.GameState;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
 import player.service.game.EliminationService;
@@ -13,8 +13,7 @@ import proto.messages.MessageOuterClass.Message;
 
 import java.util.List;
 
-public class ElectionAlgorithmThread extends Thread {
-    public static int seekerId;
+final class ElectionAlgorithmThread extends Thread {
     private static final Object lock = new Object();
 
     private final GameState gameState;

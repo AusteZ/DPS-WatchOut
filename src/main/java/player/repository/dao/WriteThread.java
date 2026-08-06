@@ -1,5 +1,6 @@
-package player.Connections;
+package player.repository.dao;
 
+import player.repository.Queue;
 import proto.coordinates.RegistrationRequestOuterClass.RegistrationRequest;
 import proto.messages.MessageOuterClass.Message;
 

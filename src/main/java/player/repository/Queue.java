@@ -1,24 +1,25 @@
-package player.Connections;
+package player.repository;
 
 import proto.messages.MessageOuterClass.Message;
 
 import java.util.ArrayList;
 
 public class Queue {
-    private ArrayList<Message> queue = new ArrayList<Message>();
+    private final ArrayList<Message> queue = new ArrayList<>();
+
     public synchronized void put(Message message) {
         queue.add(message);
-        notify();
+        this.notify();
     }
+
     public synchronized Message take() {
         try {
             while (queue.isEmpty()) {
-                wait();
+                this.wait();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return queue.remove(0);
     }
-    
 }

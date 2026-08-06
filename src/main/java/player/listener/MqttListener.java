@@ -7,7 +7,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import player.enums.GamePhase;
-import player.repository.dao.GameState;
+import player.repository.GameState;
 import player.service.election.ElectionService;
 
 public class MqttListener {

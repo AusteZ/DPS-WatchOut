@@ -1,17 +1,17 @@
 package player.service.game;
 
-import player.Connections.WriteThread;
+import player.repository.GameState;
 import player.repository.OtherPlayerRepository;
-import player.repository.dao.GameState;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
+import player.repository.dao.WriteThread;
 import proto.messages.MessageOuterClass;
 import proto.messages.MessageOuterClass.Message;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MutualExclusionAlgorithmThread extends Thread {
+final class MutualExclusionAlgorithmThread extends Thread {
     private long timestamp = -1;
     private final Object timestampLock = new Object();
 
@@ -112,25 +112,6 @@ public class MutualExclusionAlgorithmThread extends Thread {
             return !permissionForHomebase;
         }
     }
-
-    /*public boolean ableToBeEliminated() {
-        synchronized (permissionForHomebaseLock) {
-            if (!permissionForHomebase) {
-                localPlayer.setActive(false);
-                System.out.println("I was caught");
-            }
-            return !PlayerApplication.active;
-
-            if (!permissionForHomebase) {
-                localPlayer.setActive(false);
-                System.out.println("I was caught");
-            }
-
-            return localPlayer.isActive();
-
-            return !permissionForHomebase || !PlayerApplication.active;
-        }
-    }*/
 
     public void decreaseCounter() {
         synchronized (playersAheadInLineCountLock) {

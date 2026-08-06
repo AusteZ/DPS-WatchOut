@@ -1,8 +1,5 @@
 package player.repository.dao;
 
-import player.Connections.ReadThread;
-import player.Connections.WriteThread;
-
 public class OtherPlayer {
     Player player;
     WriteThread writeThread;

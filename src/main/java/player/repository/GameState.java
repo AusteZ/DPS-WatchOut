@@ -1,6 +1,7 @@
-package player.repository.dao;
+package player.repository;
 
 import player.enums.GamePhase;
+import player.repository.dao.Coordinates;
 
 public class GameState {
     private volatile GamePhase gamePhase = GamePhase.PRE_REGISTRATION;

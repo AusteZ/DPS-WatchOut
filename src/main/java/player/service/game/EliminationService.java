@@ -1,7 +1,7 @@
 package player.service.game;
 
+import player.repository.GameState;
 import player.repository.OtherPlayerRepository;
-import player.repository.dao.GameState;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
 import proto.messages.MessageOuterClass;

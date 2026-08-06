@@ -1,8 +1,9 @@
 package player.client;
 
-import player.repository.dao.Player;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dtos.MeasurementListDto;
 import dtos.RegistrationResponse;
+import player.repository.dao.Player;
 
 import java.io.IOException;
 import java.net.URI;
@@ -14,13 +15,18 @@ import java.util.logging.Logger;
 public class AdminServerClient {
     private final static Logger LOGGER = Logger.getLogger(AdminServerClient.class.getName());
     private final static String REGISTRATION_PATH = "/players/registration";
+    private static final String ANALYTICS_PATH = "/analytics/postmeasurements";
+
+
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String registrationUrl;
+    private final String analyticsUrl;
     private final HttpClient client;
 
     public AdminServerClient(String baseUrl, HttpClient client) {
         this.registrationUrl = baseUrl + REGISTRATION_PATH;
+        this.analyticsUrl = baseUrl + ANALYTICS_PATH;
         this.client = client;
     }
 
@@ -57,6 +63,26 @@ public class AdminServerClient {
         }
 
         return null;
+    }
+
+    public void postMeasurements(MeasurementListDto measurementListDto) throws IOException, InterruptedException {
+        String requestBody = objectMapper.writeValueAsString(measurementListDto);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(analyticsUrl))
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+
+        HttpResponse<String> response = client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        if (response.statusCode() != 200) {
+            System.out.println(response.statusCode() + " " + response.body());
+        }
     }
 
     private void translateError(HttpResponse<String> response) throws IllegalAccessException {

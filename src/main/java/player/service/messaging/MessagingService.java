@@ -1,7 +1,7 @@
 package player.service.messaging;
 
+import player.repository.GameState;
 import player.repository.OtherPlayerRepository;
-import player.repository.dao.GameState;
 import player.repository.dao.Player;
 import player.service.election.ElectionService;
 import player.service.game.ActiveGameService;

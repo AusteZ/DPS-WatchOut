@@ -1,9 +1,9 @@
 package player.service.election;
 
 import player.enums.GamePhase;
+import player.repository.GameState;
 import player.repository.OtherPlayerRepository;
 import player.repository.dao.Coordinates;
-import player.repository.dao.GameState;
 import player.repository.dao.OtherPlayer;
 import player.repository.dao.Player;
 import player.service.game.ActiveGameService;
