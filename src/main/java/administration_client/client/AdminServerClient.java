@@ -19,16 +19,18 @@ import java.util.logging.Logger;
 
 public class AdminServerClient {
     private final static Logger LOGGER = Logger.getLogger(AdminServerClient.class.getName());
+
     private final static String GET_PLAYERS_PATH = "/players/list";
     private final static String ANALYTICS_BETWEEN_PATH = "/analytics/getvaluesbetweentimestamps";
     private final static String ANALYTICS_LAST_PATH = "/analytics/getlastnmeasurements/{playerId}/{count}";
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final String getPlayersUrl;
     private final String analyticsBetweenUrl;
     private final String analyticsLastUrl;
+
     private final HttpClient httpClient;
-    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public AdminServerClient(String url, HttpClient httpClient) {
         this.getPlayersUrl = url + GET_PLAYERS_PATH;
