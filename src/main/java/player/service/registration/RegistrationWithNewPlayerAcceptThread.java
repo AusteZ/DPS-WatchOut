@@ -28,6 +28,7 @@ final class RegistrationWithNewPlayerAcceptThread extends Thread {
     }
 
     private void acceptRegistration() throws Exception {
+        //TODO: send out own request
         OtherPlayer otherPlayer = socketClient.acceptRegistrationWithOtherPlayers(null);
         otherPlayerRepository.addPlayer(otherPlayer);
 
