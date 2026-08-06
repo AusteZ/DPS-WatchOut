@@ -3,11 +3,11 @@ package administration_server.service;
 import Exceptions.PlayerAlreadyExistsException;
 import Exceptions.UnitializedPlayerException;
 import administration_server.repository.PlayerRepository;
+import administration_server.utils.CoordinateGeneratorUtil;
 import dtos.CoordinatesDto;
 import dtos.PlayerInfo;
 import dtos.PlayersDto;
 import dtos.RegistrationResponse;
-import library.Generator.CoordinateGenerator;
 
 import java.util.List;
 
@@ -30,8 +30,7 @@ public class PlayerService {
 
         playerRepository.registerPlayer(player);
 
-        int[] coords = CoordinateGenerator.generateStartingPosition();
-        CoordinatesDto coordinates = new CoordinatesDto(coords[0], coords[1]);
+        CoordinatesDto coordinates = CoordinateGeneratorUtil.generateStartingCoordinates();
         return new RegistrationResponse(players, coordinates);
     }
 }
