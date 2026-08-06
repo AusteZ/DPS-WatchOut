@@ -8,7 +8,7 @@ import org.glassfish.jersey.server.ServerProperties;
 public final class BinderHelper {
     public static ResourceConfig createConfig(){
         return new ResourceConfig()
-                .packages("administration_server.Services")
+                .packages("administration_server.service")
                 .register(new AbstractBinder() {
                     @Override
                     protected void configure() {

@@ -1,11 +1,9 @@
 package player;
 
 import Simulators.Buffer;
-import library.ApplicationResourcesHandler;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import player.client.AdminServerClient;
 import player.client.SocketClient;
-import player.listener.MqttListener;
+import player.config.Configuration;
 import player.repository.GameState;
 import player.repository.HRBuffer;
 import player.repository.MeasurementValueRepository;
@@ -22,15 +20,16 @@ import player.userinterface.CliController;
 import player.userinterface.UserInterface;
 
 import java.net.ServerSocket;
-import java.net.http.HttpClient;
 
 public class PlayerApplication {
 
     public static void main(String[] ignoredArgs) throws Exception {
+        Configuration config = new Configuration();
+
         Player localPlayer = createLocalPlayer();
         GameState gameState = new GameState();
 
-        AdminServerClient adminServerClient = createAdminServerClient();
+        AdminServerClient adminServerClient = config.createAdminServerClient();
 
         OtherPlayerRepository otherPlayerRepository = new OtherPlayerRepository();
 
@@ -51,23 +50,11 @@ public class PlayerApplication {
 
         registrationService.register();
         heartRateSimulationService.startHeartRateSimulation();
-        startMqttListener(gameState, electionService);
+        config.startMqttListener(gameState, electionService);
     }
 
     private static Player createLocalPlayer() throws Exception {
         UserInterface userInterface = new CliController();
         return userInterface.setupLocalPlayer();
-    }
-
-    private static AdminServerClient createAdminServerClient(){
-        String url = ApplicationResourcesHandler.getProperty("server.url");
-        HttpClient httpClient = HttpClient.newBuilder().build();
-        return new AdminServerClient(url, httpClient);
-    }
-
-    private static void startMqttListener(GameState gameState, ElectionService electionService) throws MqttException {
-        String broker = ApplicationResourcesHandler.getProperty("mqtt.broker");
-        int qos = 2;
-        new MqttListener(broker, qos, gameState, electionService);
     }
 }
