@@ -1,7 +1,6 @@
 package administration_client.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dtos.AverageDto;
+import dtos.MeasurementAverageDto;
 import dtos.PlayerInfo;
 import dtos.PlayersDto;
 import dtos.TimestampsDto;
@@ -10,16 +9,11 @@ import library.HttpClientWrapper;
 
 import java.net.URI;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class AdminServerClient {
-    private final static Logger LOGGER = Logger.getLogger(AdminServerClient.class.getName());
-
     private final static String GET_PLAYERS_PATH = "/players/list";
     private final static String ANALYTICS_BETWEEN_PATH = "/analytics/getvaluesbetweentimestamps";
     private final static String ANALYTICS_LAST_PATH = "/analytics/getlastnmeasurements/{playerId}/{count}";
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final String getPlayersUrl;
     private final String analyticsBetweenUrl;
@@ -44,8 +38,8 @@ public class AdminServerClient {
     public double getMeasurementAverageBetweenTimestamps(Long startTimestamp, Long endTimestamp) {
         TimestampsDto timestampsDto = new TimestampsDto(startTimestamp, endTimestamp);
         URI uri = URI.create(analyticsBetweenUrl);
-        AverageDto averageDto = httpClientWrapper.postRequestWithResponse(uri, timestampsDto, AverageDto.class);
-        return averageDto.average();
+        MeasurementAverageDto measurementAverageDto = httpClientWrapper.postRequestWithResponse(uri, timestampsDto, MeasurementAverageDto.class);
+        return measurementAverageDto.average();
     }
 
     public double getLatestMeasurementAverage(int playerId, int count) {
@@ -54,7 +48,7 @@ public class AdminServerClient {
                 .resolveTemplate("count", count)
                 .build();
 
-        AverageDto averageDto = httpClientWrapper.getRequest(uri, AverageDto.class);
-        return averageDto.average();
+        MeasurementAverageDto measurementAverageDto = httpClientWrapper.getRequest(uri, MeasurementAverageDto.class);
+        return measurementAverageDto.average();
     }
 }

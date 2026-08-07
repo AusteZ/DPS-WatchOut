@@ -2,7 +2,7 @@ package administration_server.controller;
 
 import administration_server.exception.NotFoundException;
 import administration_server.service.MeasurementService;
-import dtos.AverageDto;
+import dtos.MeasurementAverageDto;
 import dtos.MeasurementListDto;
 import dtos.TimestampsDto;
 import dtos.enums.MeasurementType;
@@ -47,8 +47,8 @@ public final class AnalyticsController {
                                          @QueryParam("type") MeasurementType type,
                                          @QueryParam("lastMeasurementCount") int lastMeasurementCount) {
         try {
-            double average = measurementService.calculateLatestMeasurementAverage(playerId, lastMeasurementCount);
-            AverageDto response = new AverageDto(average);
+            double average = measurementService.calculateLatestMeasurementAverages(playerId, lastMeasurementCount);
+            MeasurementAverageDto response = new MeasurementAverageDto(average);
             return Response.ok(response).build();
         } catch (ValidationException e) {
             LOGGER.log(Level.SEVERE, "Error while getting last measurements. [playerId=%s, errorMessage=%s]".formatted(playerId, e.getMessage()), e);
@@ -67,8 +67,8 @@ public final class AnalyticsController {
     @Produces({"application/json", "application/xml"})
     public Response getMeasurementsBetweenTimestamps(TimestampsDto timestampsDto) {
         try{
-            double average = measurementService.calculateMeasurementAverageBetweenTimestamps(timestampsDto.startTimestamp(), timestampsDto.endTimestamp());
-            AverageDto response = new AverageDto(average);
+            double average = measurementService.calculateMeasurementAveragesBetweenTimestamps(timestampsDto.startTimestamp(), timestampsDto.endTimestamp());
+            MeasurementAverageDto response = new MeasurementAverageDto(average);
             return Response.ok(response).build();
         } catch (ValidationException e) {
             LOGGER.log(Level.SEVERE, "Error while getting measurements between timestamps. [timestamps=%s, errorMessage=%s]".formatted(timestampsDto, e.getMessage()), e);
