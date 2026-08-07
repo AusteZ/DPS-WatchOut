@@ -1,7 +1,7 @@
 package administration_server.service;
 
-import Exceptions.PlayerAlreadyExistsException;
-import Exceptions.UninitializedPlayerException;
+import administration_server.exception.PlayerAlreadyExistsException;
+import administration_server.exception.UninitializedPlayerException;
 import administration_server.repository.PlayerRepository;
 import administration_server.utils.CoordinateGeneratorUtil;
 import dtos.CoordinatesDto;

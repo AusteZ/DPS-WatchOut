@@ -1,7 +1,7 @@
 package administration_server.controller;
 
-import Exceptions.PlayerAlreadyExistsException;
-import Exceptions.UninitializedPlayerException;
+import administration_server.exception.PlayerAlreadyExistsException;
+import administration_server.exception.UninitializedPlayerException;
 import administration_server.service.PlayerService;
 import dtos.PlayerInfo;
 import dtos.PlayersDto;

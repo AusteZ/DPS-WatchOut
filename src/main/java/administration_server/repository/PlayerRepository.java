@@ -1,6 +1,6 @@
 package administration_server.repository;
 
-import Exceptions.PlayerAlreadyExistsException;
+import administration_server.exception.PlayerAlreadyExistsException;
 import dtos.PlayerInfo;
 
 import java.util.ArrayList;

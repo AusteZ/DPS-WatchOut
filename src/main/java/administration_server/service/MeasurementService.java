@@ -1,7 +1,7 @@
 package administration_server.service;
 
-import Exceptions.NoDataRecordedException;
-import Exceptions.UninitializedPlayerException;
+import administration_server.exception.NoDataRecordedException;
+import administration_server.exception.UninitializedPlayerException;
 import administration_server.repository.MeasurementRepository;
 import dtos.MeasurementListDto;
 import dtos.MeasurementValue;

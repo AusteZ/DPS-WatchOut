@@ -1,6 +1,6 @@
 package administration_server.repository;
 
-import Exceptions.UninitializedPlayerException;
+import administration_server.exception.UninitializedPlayerException;
 import dtos.MeasurementListDto;
 import dtos.MeasurementValue;
 
