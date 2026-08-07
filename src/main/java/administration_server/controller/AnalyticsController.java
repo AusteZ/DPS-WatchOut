@@ -1,9 +1,11 @@
 package administration_server.controller;
 
+import administration_server.exception.NotFoundException;
 import administration_server.service.MeasurementService;
 import dtos.AverageDto;
 import dtos.MeasurementListDto;
 import dtos.TimestampsDto;
+import jakarta.validation.ValidationException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -12,24 +14,29 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 @Path("analytics")
 public class AnalyticsController {
+    private static final Logger LOGGER = Logger.getLogger(AnalyticsController.class.getName());
+
     private final MeasurementService measurementService;
 
     public AnalyticsController(MeasurementService measurementService) {
         this.measurementService = measurementService;
     }
 
-    @Path("postmeasurements")
+    @Path("post-measurements")
     @POST
     @Consumes({"application/json", "application/xml"})
     @Produces({"application/json", "application/xml"})
-    public Response postMeasurements(MeasurementListDto ml) {
-        measurementService.addMeasurements(ml);
-        return Response.ok().build();
+    public Response postMeasurements(MeasurementListDto measurementListDto) {
+        measurementService.addMeasurements(measurementListDto);
+        return Response.noContent().build();
     }
 
-    @Path("getlastnmeasurements/{playerId}/{lastMeasurementCount}")
+    @Path("get-last-n-measurements/{playerId}/{lastMeasurementCount}")
     @GET
     @Produces({"application/json", "application/xml"})
     public Response getLastNMeasurements(@PathParam("playerId") int playerId, @PathParam("lastMeasurementCount") int lastMeasurementCount) {
@@ -37,21 +44,35 @@ public class AnalyticsController {
             double average = measurementService.calculateLatestMeasurementAverage(playerId, lastMeasurementCount);
             AverageDto response = new AverageDto(average);
             return Response.ok(response).build();
+        } catch (ValidationException e) {
+            LOGGER.log(Level.SEVERE, "Error while getting last measurements. [playerId=%s, errorMessage=%s]".formatted(playerId, e.getMessage()), e);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (NotFoundException e){
+            LOGGER.log(Level.SEVERE, "Error while getting last measurements. [playerId=%s, errorMessage=%s]".formatted(playerId, e.getMessage()), e);
+            return Response.status(Response.Status.NOT_FOUND).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            LOGGER.log(Level.SEVERE, "Unknown error while getting last measurements. [errorMessage=%s]".formatted(e.getMessage()), e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
-    @Path("getvaluesbetweentimestamps")
+    @Path("get-values-between-timestamps")
     @POST
     @Produces({"application/json", "application/xml"})
     public Response getMeasurementsBetweenTimestamps(TimestampsDto timestampsDto) {
-        double average = measurementService.calculateMeasurementAverageBetweenTimestamps(timestampsDto.startTimestamp(), timestampsDto.endTimestamp());
-        if (average <= 0) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("No values between the two timestamps").build();
+        try{
+            double average = measurementService.calculateMeasurementAverageBetweenTimestamps(timestampsDto.startTimestamp(), timestampsDto.endTimestamp());
+            AverageDto response = new AverageDto(average);
+            return Response.ok(response).build();
+        } catch (ValidationException e) {
+            LOGGER.log(Level.SEVERE, "Error while getting measurements between timestamps. [errorMessage=%s]".formatted(e.getMessage()), e);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (NotFoundException e){
+            LOGGER.log(Level.SEVERE, "Error while getting measurements between timestamps. [errorMessage=%s]".formatted(e.getMessage()), e);
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Unknown error while getting measurements between timestamps [errorMessage=%s]".formatted(e.getMessage()), e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
-
-        AverageDto response = new AverageDto(average);
-        return Response.ok(response).build();
     }
 }

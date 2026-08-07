@@ -57,6 +57,5 @@ public class PlayerController {
             LOGGER.log(Level.SEVERE, "Unknown error while getting player list. [errorMessage=%s]".formatted(e.getMessage()), e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-
     }
 }

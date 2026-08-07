@@ -1,6 +1,5 @@
 package administration_server.repository;
 
-import administration_server.exception.UninitializedPlayerException;
 import dtos.MeasurementListDto;
 import dtos.MeasurementValue;
 
@@ -11,22 +10,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MeasurementRepository {
+public final class MeasurementRepository {
     private final Map<Integer, List<MeasurementValue>> measurementValuesByPlayerId = new HashMap<>();
 
     public void addMeasurements(MeasurementListDto measurementListDto) {
         synchronized (measurementValuesByPlayerId) {
             List<MeasurementValue> values = measurementListDto.values();
-            measurementValuesByPlayerId.computeIfAbsent(measurementListDto.id(), key -> new ArrayList<>())
+            measurementValuesByPlayerId.computeIfAbsent(measurementListDto.id(), _ -> new ArrayList<>())
                     .addAll(values);
         }
     }
 
-    public List<MeasurementValue> getLastestMeasurements(int playerId, int count) throws UninitializedPlayerException {
+    public List<MeasurementValue> getLastestMeasurements(int playerId, int count) {
         synchronized (measurementValuesByPlayerId) {
             List<MeasurementValue> measurements = measurementValuesByPlayerId.get(playerId);
             if (measurements == null) {
-                throw new UninitializedPlayerException("No such player id found.");
+                return List.of();
             }
 
             measurements.sort(Comparator.comparingLong(MeasurementValue::timestamp));
