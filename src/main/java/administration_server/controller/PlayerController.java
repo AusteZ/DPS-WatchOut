@@ -6,6 +6,7 @@ import administration_server.service.PlayerService;
 import dtos.PlayerInfo;
 import dtos.PlayersDto;
 import dtos.RegistrationResponse;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -22,6 +23,7 @@ public final class PlayerController {
 
     private final PlayerService playerService;
 
+    @Inject
     public PlayerController(PlayerService playerService) {
         this.playerService = playerService;
     }

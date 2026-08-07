@@ -32,15 +32,15 @@ public final class Configuration {
 
     private ResourceConfig resourceConfig(MeasurementRepository measurementRepository, PlayerRepository playerRepository) {
         return new ResourceConfig()
-                .packages("administration_server.service")
+                .packages("administration_server")
                 .register(new AbstractBinder() {
                     @Override
                     protected void configure() {
-                        bind(new MeasurementService(measurementRepository)).to(MeasurementService.class);
-                        bind(MeasurementService.class).to(MeasurementService.class);
+                        bind(new MeasurementService(measurementRepository))
+                                .to(MeasurementService.class);
 
-                        bind(new PlayerService(playerRepository)).to(PlayerService.class);
-                        bind(PlayerService.class).to(PlayerService.class);
+                        bind(new PlayerService(playerRepository))
+                                .to(PlayerService.class);
                     }
                 })
                 .property(ServerProperties.WADL_FEATURE_DISABLE, true);

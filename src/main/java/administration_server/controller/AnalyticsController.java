@@ -5,6 +5,7 @@ import administration_server.service.MeasurementService;
 import dtos.AverageDto;
 import dtos.MeasurementListDto;
 import dtos.TimestampsDto;
+import jakarta.inject.Inject;
 import jakarta.validation.ValidationException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -23,6 +24,7 @@ public final class AnalyticsController {
 
     private final MeasurementService measurementService;
 
+    @Inject
     public AnalyticsController(MeasurementService measurementService) {
         this.measurementService = measurementService;
     }
