@@ -2,7 +2,9 @@ package administration_server.service;
 
 import administration_server.exception.PlayerAlreadyExistsException;
 import administration_server.exception.UninitializedPlayerException;
+import administration_server.mapper.PlayerMapper;
 import administration_server.repository.PlayerRepository;
+import administration_server.repository.dao.PlayerDao;
 import administration_server.utils.CoordinateGeneratorUtil;
 import dtos.CoordinatesDto;
 import dtos.PlayerInfo;
@@ -19,18 +21,22 @@ public final class PlayerService {
     }
 
     public PlayersDto getPlayers() {
-        return new PlayersDto(playerRepository.getPlayersList());
+        List<PlayerDao> players = playerRepository.getPlayerList();
+        List<PlayerInfo> playerDtoList = PlayerMapper.toDto(players);
+        return new PlayersDto(playerDtoList);
     }
 
     public RegistrationResponse registerPlayer(PlayerInfo player) throws PlayerAlreadyExistsException, UninitializedPlayerException {
         validatePlayer(player);
 
-        List<PlayerInfo> players = playerRepository.getPlayersList();
+        List<PlayerDao> players = playerRepository.getPlayerList();
+        List<PlayerInfo> playerDtoList = PlayerMapper.toDto(players);
 
-        playerRepository.registerPlayer(player);
+        PlayerDao playerDao = PlayerMapper.toDao(player);
+        playerRepository.registerPlayer(playerDao);
 
         CoordinatesDto coordinates = CoordinateGeneratorUtil.generateStartingCoordinates();
-        return new RegistrationResponse(players, coordinates);
+        return new RegistrationResponse(playerDtoList, coordinates);
     }
 
     private void validatePlayer(PlayerInfo player) throws UninitializedPlayerException {
