@@ -16,7 +16,7 @@ public final class AdministrationServerApplication {
         MeasurementRepository measurementRepository = new MeasurementRepository();
         PlayerRepository playerRepository = new PlayerRepository();
 
-        HttpServer httpServer = config.startServer(measurementRepository, playerRepository);
+        HttpServer httpServer = config.httpServer(measurementRepository, playerRepository);
 
         UserInterface userInterface = ConsoleUserInterface.getInstance();
         userInterface.runInterface();

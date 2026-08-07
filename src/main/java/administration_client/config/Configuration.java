@@ -19,14 +19,14 @@ public class Configuration {
         this.resourceHandler = new ResourceHandler("application");
     }
 
-    public AdminServerClient getAdminServerClient() {
+    public AdminServerClient adminServerClient() {
         String url = resourceHandler.getProperty("server.url");
         HttpClient httpClient = HttpClient.newBuilder().build();
         HttpClientWrapper httpClientWrapper = new HttpClientWrapper(httpClient);
         return new AdminServerClient(url, httpClientWrapper);
     }
 
-    public MqttClient getMqttClient() throws MqttException {
+    public MqttClient mqttClient() throws MqttException {
         String broker = resourceHandler.getProperty("mqtt.broker");
         MqttClient mqttClient = new MqttClient(broker, MqttClient.generateClientId());
         MqttConnectOptions connOpts = new MqttConnectOptions();

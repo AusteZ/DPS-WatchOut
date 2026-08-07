@@ -15,8 +15,8 @@ public class AdministrationClientApplication {
     public static void main(String[] ignoredArgs) throws MqttException {
         Configuration config = new Configuration();
 
-        AdminServerClient adminServerClient = config.getAdminServerClient();
-        MqttClient mqttClient = config.getMqttClient();
+        AdminServerClient adminServerClient = config.adminServerClient();
+        MqttClient mqttClient = config.mqttClient();
         MqttService mqttService = new MqttService(mqttClient);
 
         UserInterfaceBridge userInterfaceBridge = new UserInterfaceBridgeImpl(adminServerClient, mqttService);

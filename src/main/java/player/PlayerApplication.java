@@ -29,7 +29,7 @@ public class PlayerApplication {
         Player localPlayer = createLocalPlayer();
         GameState gameState = new GameState();
 
-        AdminServerClient adminServerClient = config.createAdminServerClient();
+        AdminServerClient adminServerClient = config.adminServerClient();
 
         OtherPlayerRepository otherPlayerRepository = new OtherPlayerRepository();
 
@@ -50,7 +50,7 @@ public class PlayerApplication {
 
         registrationService.register();
         heartRateSimulationService.startHeartRateSimulation();
-        config.startMqttListener(gameState, electionService);
+        config.mqttListener(gameState, electionService);
     }
 
     private static Player createLocalPlayer() throws Exception {

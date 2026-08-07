@@ -21,16 +21,16 @@ public class Configuration {
         resourceHandler = new ResourceHandler("application");
     }
 
-    public HttpServer startServer(MeasurementRepository measurementRepository, PlayerRepository playerRepository) throws IOException {
+    public HttpServer httpServer(MeasurementRepository measurementRepository, PlayerRepository playerRepository) throws IOException {
         String baseUrl = resourceHandler.getProperty("server.url");
         URI uri = URI.create(baseUrl);
-        ResourceConfig config = createConfig(measurementRepository, playerRepository);
+        ResourceConfig config = resourceConfig(measurementRepository, playerRepository);
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(uri, config);
         server.start();
         return server;
     }
 
-    private ResourceConfig createConfig(MeasurementRepository measurementRepository, PlayerRepository playerRepository) {
+    private ResourceConfig resourceConfig(MeasurementRepository measurementRepository, PlayerRepository playerRepository) {
         return new ResourceConfig()
                 .packages("administration_server.service")
                 .register(new AbstractBinder() {

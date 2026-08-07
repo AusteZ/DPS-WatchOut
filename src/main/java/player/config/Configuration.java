@@ -17,14 +17,14 @@ public class Configuration {
         this.resourceHandler = new ResourceHandler("application");
     }
 
-    public AdminServerClient createAdminServerClient() {
+    public AdminServerClient adminServerClient() {
         String url = resourceHandler.getProperty("server.url");
         HttpClient httpClient = HttpClient.newBuilder().build();
         HttpClientWrapper httpClientWrapper = new HttpClientWrapper(httpClient);
         return new AdminServerClient(url, httpClientWrapper);
     }
 
-    public void startMqttListener(GameState gameState, ElectionService electionService) throws MqttException {
+    public void mqttListener(GameState gameState, ElectionService electionService) throws MqttException {
         String broker = resourceHandler.getProperty("mqtt.broker");
         int qos = 2;
         new MqttListener(broker, qos, gameState, electionService);
