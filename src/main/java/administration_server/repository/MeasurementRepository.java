@@ -9,19 +9,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MeasurementRepository {
-    private final HashMap<Integer, List<MeasurementValue>> measurementValuesByPlayerId = new HashMap<>();
+    private final Map<Integer, List<MeasurementValue>> measurementValuesByPlayerId = new HashMap<>();
 
     public void addMeasurements(MeasurementListDto measurementListDto) {
         synchronized (measurementValuesByPlayerId) {
-            if (!measurementValuesByPlayerId.containsKey(measurementListDto.id())) {
-                measurementValuesByPlayerId.put(measurementListDto.id(), new ArrayList<>());
-            }
-
             List<MeasurementValue> values = measurementListDto.values();
-
-            measurementValuesByPlayerId.get(measurementListDto.id()).addAll(values);
+            measurementValuesByPlayerId.computeIfAbsent(measurementListDto.id(), key -> new ArrayList<>())
+                    .addAll(values);
         }
     }
 
