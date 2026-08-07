@@ -5,7 +5,6 @@ import administration_server.service.MeasurementService;
 import dtos.MeasurementAverageDto;
 import dtos.MeasurementListDto;
 import dtos.TimestampsDto;
-import dtos.enums.MeasurementType;
 import jakarta.inject.Inject;
 import jakarta.validation.ValidationException;
 import jakarta.ws.rs.Consumes;
@@ -17,6 +16,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,16 +44,14 @@ public final class AnalyticsController {
     @GET
     @Produces({"application/json", "application/xml"})
     public Response getLastNMeasurements(@PathParam("playerId") int playerId,
-                                         @QueryParam("type") MeasurementType type,
                                          @QueryParam("lastMeasurementCount") int lastMeasurementCount) {
         try {
-            double average = measurementService.calculateLatestMeasurementAverages(playerId, lastMeasurementCount);
-            MeasurementAverageDto response = new MeasurementAverageDto(average);
+            List<MeasurementAverageDto> response = measurementService.calculateLatestMeasurementAverages(playerId, lastMeasurementCount);
             return Response.ok(response).build();
         } catch (ValidationException e) {
             LOGGER.log(Level.SEVERE, "Error while getting last measurements. [playerId=%s, errorMessage=%s]".formatted(playerId, e.getMessage()), e);
             return Response.status(Response.Status.BAD_REQUEST).build();
-        } catch (NotFoundException e){
+        } catch (NotFoundException e) {
             LOGGER.log(Level.SEVERE, "Error while getting last measurements. [playerId=%s, errorMessage=%s]".formatted(playerId, e.getMessage()), e);
             return Response.status(Response.Status.NOT_FOUND).build();
         } catch (Exception e) {
@@ -66,14 +64,13 @@ public final class AnalyticsController {
     @POST
     @Produces({"application/json", "application/xml"})
     public Response getMeasurementsBetweenTimestamps(TimestampsDto timestampsDto) {
-        try{
-            double average = measurementService.calculateMeasurementAveragesBetweenTimestamps(timestampsDto.startTimestamp(), timestampsDto.endTimestamp());
-            MeasurementAverageDto response = new MeasurementAverageDto(average);
+        try {
+            List<MeasurementAverageDto> response = measurementService.calculateMeasurementAveragesBetweenTimestamps(timestampsDto.startTimestamp(), timestampsDto.endTimestamp());
             return Response.ok(response).build();
         } catch (ValidationException e) {
             LOGGER.log(Level.SEVERE, "Error while getting measurements between timestamps. [timestamps=%s, errorMessage=%s]".formatted(timestampsDto, e.getMessage()), e);
             return Response.status(Response.Status.BAD_REQUEST).build();
-        } catch (NotFoundException e){
+        } catch (NotFoundException e) {
             LOGGER.log(Level.SEVERE, "Error while getting measurements between timestamps. [timestamps=%s, errorMessage=%s]".formatted(timestampsDto, e.getMessage()), e);
             return Response.status(Response.Status.NOT_FOUND).build();
         } catch (Exception e) {
