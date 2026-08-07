@@ -67,13 +67,13 @@ public final class AnalyticsController {
             AverageDto response = new AverageDto(average);
             return Response.ok(response).build();
         } catch (ValidationException e) {
-            LOGGER.log(Level.SEVERE, "Error while getting measurements between timestamps. [errorMessage=%s]".formatted(e.getMessage()), e);
+            LOGGER.log(Level.SEVERE, "Error while getting measurements between timestamps. [timestamps=%s, errorMessage=%s]".formatted(timestampsDto, e.getMessage()), e);
             return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (NotFoundException e){
-            LOGGER.log(Level.SEVERE, "Error while getting measurements between timestamps. [errorMessage=%s]".formatted(e.getMessage()), e);
+            LOGGER.log(Level.SEVERE, "Error while getting measurements between timestamps. [timestamps=%s, errorMessage=%s]".formatted(timestampsDto, e.getMessage()), e);
             return Response.status(Response.Status.NOT_FOUND).build();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unknown error while getting measurements between timestamps [errorMessage=%s]".formatted(e.getMessage()), e);
+            LOGGER.log(Level.SEVERE, "Unknown error while getting measurements between timestamps [timestamps=%s, errorMessage=%s]".formatted(timestampsDto, e.getMessage()), e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }

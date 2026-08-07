@@ -1,7 +1,6 @@
 package administration_server.repository;
 
-import dtos.MeasurementListDto;
-import dtos.MeasurementValue;
+import administration_server.repository.dao.MeasurementDao;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,49 +10,48 @@ import java.util.List;
 import java.util.Map;
 
 public final class MeasurementRepository {
-    private final Map<Integer, List<MeasurementValue>> measurementValuesByPlayerId = new HashMap<>();
+    private final Map<Integer, List<MeasurementDao>> measurementValuesByPlayerId = new HashMap<>();
 
-    public void addMeasurements(MeasurementListDto measurementListDto) {
+    public void addMeasurements(int playerId, List<MeasurementDao> measurements) {
         synchronized (measurementValuesByPlayerId) {
-            List<MeasurementValue> values = measurementListDto.values();
-            measurementValuesByPlayerId.computeIfAbsent(measurementListDto.id(), _ -> new ArrayList<>())
-                    .addAll(values);
+            measurementValuesByPlayerId.computeIfAbsent(playerId, _ -> new ArrayList<>())
+                    .addAll(measurements);
         }
     }
 
-    public List<MeasurementValue> getLastestMeasurements(int playerId, int count) {
+    public List<MeasurementDao> getLastestMeasurements(int playerId, int count) {
         synchronized (measurementValuesByPlayerId) {
-            List<MeasurementValue> measurements = measurementValuesByPlayerId.get(playerId);
+            List<MeasurementDao> measurements = measurementValuesByPlayerId.get(playerId);
             if (measurements == null) {
                 return List.of();
             }
 
-            measurements.sort(Comparator.comparingLong(MeasurementValue::timestamp));
+            measurements.sort(Comparator.comparingLong(MeasurementDao::timestamp));
 
             count = Math.min(measurements.size(), count);
             int firstIndex = measurements.size() - count;
 
-            List<MeasurementValue> measurementSublist = measurements.subList(firstIndex, count);
+            List<MeasurementDao> measurementSublist = measurements.subList(firstIndex, count);
 
             return new ArrayList<>(measurementSublist);
         }
     }
 
-    public List<MeasurementValue> getMeasurementsBetweenTimestamps(long startTimestamp, long endTimestamp) {
+    public List<MeasurementDao> getMeasurementsBetweenTimestamps(long startTimestamp, long endTimestamp) {
         synchronized (measurementValuesByPlayerId) {
-            List<MeasurementValue> measurements = measurementValuesByPlayerId.values()
+            List<MeasurementDao> measurements = measurementValuesByPlayerId.values()
                     .stream()
                     .flatMap(List::stream)
-                    .sorted(Comparator.comparingLong(MeasurementValue::timestamp))
+                    .sorted(Comparator.comparingLong(MeasurementDao::timestamp))
                     .toList();
 
-            MeasurementValue startTimestampMeasurement = new MeasurementValue(startTimestamp, 0);
-            int firstIndex = Collections.binarySearch(measurements, startTimestampMeasurement, Comparator.comparingLong(MeasurementValue::timestamp));
+            MeasurementDao startTimestampMeasurement = new MeasurementDao(startTimestamp, 0);
+            int firstIndex = Collections.binarySearch(measurements, startTimestampMeasurement, Comparator.comparingLong(MeasurementDao::timestamp));
 
-            MeasurementValue endTimestampMeasurement = new MeasurementValue(endTimestamp, 0);
-            int lastIndex = Collections.binarySearch(measurements, endTimestampMeasurement, Comparator.comparingLong(MeasurementValue::timestamp));
+            MeasurementDao endTimestampMeasurement = new MeasurementDao(endTimestamp, 0);
+            int lastIndex = Collections.binarySearch(measurements, endTimestampMeasurement, Comparator.comparingLong(MeasurementDao::timestamp));
             lastIndex = Math.min(measurements.size(), 1 + lastIndex);
-            List<MeasurementValue> measurementSublist = measurements.subList(firstIndex, lastIndex);
+            List<MeasurementDao> measurementSublist = measurements.subList(firstIndex, lastIndex);
             return new ArrayList<>(measurementSublist);
         }
     }

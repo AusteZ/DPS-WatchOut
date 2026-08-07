@@ -1,9 +1,10 @@
 package administration_server.service;
 
 import administration_server.exception.NotFoundException;
+import administration_server.mapper.MeasurementMapper;
 import administration_server.repository.MeasurementRepository;
+import administration_server.repository.dao.MeasurementDao;
 import dtos.MeasurementListDto;
-import dtos.MeasurementValue;
 import jakarta.validation.ValidationException;
 
 import java.util.List;
@@ -16,7 +17,8 @@ public final class MeasurementService {
     }
 
     public void addMeasurements(MeasurementListDto measurementListDto) {
-        measurementRepository.addMeasurements(measurementListDto);
+        List<MeasurementDao> measurementDaoList = MeasurementMapper.toDao(measurementListDto.values());
+        measurementRepository.addMeasurements(measurementListDto.id(), measurementDaoList);
     }
 
     public double calculateMeasurementAverageBetweenTimestamps(long startTimestamp, long endTimestamp) {
@@ -24,10 +26,10 @@ public final class MeasurementService {
             throw new ValidationException("Start timestamp cannot be after end timestamp");
         }
 
-        List<MeasurementValue> measurements = measurementRepository.getMeasurementsBetweenTimestamps(startTimestamp, endTimestamp);
+        List<MeasurementDao> measurements = measurementRepository.getMeasurementsBetweenTimestamps(startTimestamp, endTimestamp);
 
         if (measurements.isEmpty()) {
-            throw new NotFoundException("No measurements found. [startTimestamp=%d, endTimestamp=%d]".formatted(startTimestamp, endTimestamp));
+            throw new NotFoundException("No measurements found.");
         }
 
         return calculateAverage(measurements);
@@ -38,18 +40,18 @@ public final class MeasurementService {
             throw new ValidationException("Count cannot be zero or less");
         }
 
-        List<MeasurementValue> measurements = measurementRepository.getLastestMeasurements(playerId, count);
+        List<MeasurementDao> measurements = measurementRepository.getLastestMeasurements(playerId, count);
 
         if (measurements.isEmpty()) {
-            throw new NotFoundException("No measurements found. [playerId=%s]".formatted(playerId));
+            throw new NotFoundException("No measurements found.");
         }
 
         return calculateAverage(measurements);
     }
 
-    private double calculateAverage(List<MeasurementValue> measurements) {
+    private double calculateAverage(List<MeasurementDao> measurements) {
         double sum = 0.0d;
-        for (MeasurementValue measurementValue : measurements) {
+        for (MeasurementDao measurementValue : measurements) {
             sum += measurementValue.value();
         }
 
