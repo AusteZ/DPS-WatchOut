@@ -3,8 +3,7 @@ package administration_server;
 import administration_server.config.Configuration;
 import administration_server.repository.MeasurementRepository;
 import administration_server.repository.PlayerRepository;
-import administration_server.userinterface.ConsoleUserInterface;
-import administration_server.userinterface.UserInterface;
+import administration_server.userinterface.CLI;
 import org.glassfish.grizzly.http.server.HttpServer;
 
 import java.io.IOException;
@@ -18,8 +17,8 @@ public final class AdministrationServerApplication {
 
         HttpServer httpServer = config.httpServer(measurementRepository, playerRepository);
 
-        UserInterface userInterface = ConsoleUserInterface.getInstance();
-        userInterface.runInterface();
+        CLI userInterface = new CLI();
+        userInterface.exit();
         httpServer.shutdown();
     }
 }

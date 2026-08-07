@@ -11,7 +11,7 @@ import dtos.RegistrationResponse;
 
 import java.util.List;
 
-public class PlayerService {
+public final class PlayerService {
     private final PlayerRepository playerRepository;
 
     public PlayerService(PlayerRepository playerRepository) {
