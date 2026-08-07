@@ -5,6 +5,7 @@ import administration_server.service.MeasurementService;
 import dtos.AverageDto;
 import dtos.MeasurementListDto;
 import dtos.TimestampsDto;
+import dtos.enums.MeasurementType;
 import jakarta.inject.Inject;
 import jakarta.validation.ValidationException;
 import jakarta.ws.rs.Consumes;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 import java.util.logging.Level;
@@ -38,10 +40,12 @@ public final class AnalyticsController {
         return Response.noContent().build();
     }
 
-    @Path("get-last-n-measurements/{playerId}/{lastMeasurementCount}")
+    @Path("get-last-n-measurements/{playerId}")
     @GET
     @Produces({"application/json", "application/xml"})
-    public Response getLastNMeasurements(@PathParam("playerId") int playerId, @PathParam("lastMeasurementCount") int lastMeasurementCount) {
+    public Response getLastNMeasurements(@PathParam("playerId") int playerId,
+                                         @QueryParam("type") MeasurementType type,
+                                         @QueryParam("lastMeasurementCount") int lastMeasurementCount) {
         try {
             double average = measurementService.calculateLatestMeasurementAverage(playerId, lastMeasurementCount);
             AverageDto response = new AverageDto(average);

@@ -1,58 +1,90 @@
 package administration_server.repository;
 
 import administration_server.repository.dao.MeasurementDao;
+import dtos.enums.MeasurementType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class MeasurementRepository {
-    private final Map<Integer, List<MeasurementDao>> measurementValuesByPlayerId = new HashMap<>();
+    private final Map<Integer, Map<MeasurementType, List<MeasurementDao>>> measurementsByPlayerId = new HashMap<>();
 
-    public void addMeasurements(int playerId, List<MeasurementDao> measurements) {
-        synchronized (measurementValuesByPlayerId) {
-            measurementValuesByPlayerId.computeIfAbsent(playerId, _ -> new ArrayList<>())
+    public void addMeasurements(int playerId, MeasurementType measurementType, List<MeasurementDao> measurements) {
+        Map<MeasurementType, List<MeasurementDao>> measurementsByIds;
+        synchronized (measurementsByPlayerId) {
+            measurementsByPlayerId
+                    .computeIfAbsent(playerId, _ -> new HashMap<>())
+                    .computeIfAbsent(measurementType, _ -> new ArrayList<>())
                     .addAll(measurements);
         }
     }
 
-    public List<MeasurementDao> getLastestMeasurements(int playerId, int count) {
-        synchronized (measurementValuesByPlayerId) {
-            List<MeasurementDao> measurements = measurementValuesByPlayerId.get(playerId);
+    public Map<MeasurementType, List<MeasurementDao>> filterLatestMeasurements(int playerId, int count) {
+        synchronized (measurementsByPlayerId) {
+            Map<MeasurementType, List<MeasurementDao>> measurements = measurementsByPlayerId.get(playerId);
+
             if (measurements == null) {
-                return List.of();
+                return Map.of();
             }
 
-            measurements.sort(Comparator.comparingLong(MeasurementDao::timestamp));
-
-            count = Math.min(measurements.size(), count);
-            int firstIndex = measurements.size() - count;
-
-            List<MeasurementDao> measurementSublist = measurements.subList(firstIndex, count);
-
-            return new ArrayList<>(measurementSublist);
+            return filterLatestMeasurements(measurements, count);
         }
     }
 
-    public List<MeasurementDao> getMeasurementsBetweenTimestamps(long startTimestamp, long endTimestamp) {
-        synchronized (measurementValuesByPlayerId) {
-            List<MeasurementDao> measurements = measurementValuesByPlayerId.values()
-                    .stream()
-                    .flatMap(List::stream)
-                    .sorted(Comparator.comparingLong(MeasurementDao::timestamp))
-                    .toList();
+    public Map<MeasurementType, List<MeasurementDao>> getMeasurementsBetweenTimestamps(
+            long startTimestamp,
+            long endTimestamp
+    ) {
+        synchronized (measurementsByPlayerId) {
+            Map<MeasurementType, List<MeasurementDao>> result = new HashMap<>();
 
-            MeasurementDao startTimestampMeasurement = new MeasurementDao(startTimestamp, 0);
-            int firstIndex = Collections.binarySearch(measurements, startTimestampMeasurement, Comparator.comparingLong(MeasurementDao::timestamp));
+            for (Map<MeasurementType, List<MeasurementDao>> playerMeasurements : measurementsByPlayerId.values()) {
+                for (var entry : playerMeasurements.entrySet()) {
+                    List<MeasurementDao> measurements = entry.getValue()
+                            .stream()
+                            .filter(measurement ->
+                                    measurement.timestamp() >= startTimestamp &&
+                                            measurement.timestamp() <= endTimestamp
+                            )
+                            .toList();
 
-            MeasurementDao endTimestampMeasurement = new MeasurementDao(endTimestamp, 0);
-            int lastIndex = Collections.binarySearch(measurements, endTimestampMeasurement, Comparator.comparingLong(MeasurementDao::timestamp));
-            lastIndex = Math.min(measurements.size(), 1 + lastIndex);
-            List<MeasurementDao> measurementSublist = measurements.subList(firstIndex, lastIndex);
-            return new ArrayList<>(measurementSublist);
+                    result.computeIfAbsent(entry.getKey(), _ -> new ArrayList<>())
+                            .addAll(measurements);
+                }
+            }
+
+            result.values().forEach(list ->
+                    list.sort(Comparator.comparingLong(MeasurementDao::timestamp))
+            );
+
+            return result;
         }
+    }
+
+    private Map<MeasurementType, List<MeasurementDao>> filterLatestMeasurements(Map<MeasurementType, List<MeasurementDao>> measurements, int count) {
+        Map<MeasurementType, List<MeasurementDao>> result = new HashMap<>();
+
+        for (var entry : measurements.entrySet()) {
+            List<MeasurementDao> values = new ArrayList<>(entry.getValue());
+
+            result.put(
+                    entry.getKey(),
+                    filterLatestMeasurements(count, values)
+            );
+        }
+
+        return result;
+    }
+
+    private List<MeasurementDao> filterLatestMeasurements(int count, List<MeasurementDao> values) {
+        values.sort(Comparator.comparingLong(MeasurementDao::timestamp));
+
+        int actualCount = Math.min(values.size(), count);
+        int firstIndex = values.size() - actualCount;
+
+        return new ArrayList<>(values.subList(firstIndex, values.size()));
     }
 }

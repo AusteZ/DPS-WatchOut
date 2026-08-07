@@ -40,7 +40,7 @@ public final class MeasurementService {
             throw new ValidationException("Count cannot be zero or less");
         }
 
-        List<MeasurementDao> measurements = measurementRepository.getLastestMeasurements(playerId, count);
+        List<MeasurementDao> measurements = measurementRepository.filterLatestMeasurements(playerId, count);
 
         if (measurements.isEmpty()) {
             throw new NotFoundException("No measurements found.");
