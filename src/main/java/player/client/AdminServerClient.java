@@ -1,15 +1,13 @@
 package player.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dtos.MeasurementListDto;
+import dtos.PlayerInfo;
 import dtos.RegistrationResponse;
+import library.HttpClientWrapper;
 import player.repository.dao.Player;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.logging.Logger;
 
 public class AdminServerClient {
@@ -17,69 +15,25 @@ public class AdminServerClient {
     private final static String REGISTRATION_PATH = "/players/registration";
     private static final String ANALYTICS_PATH = "/analytics/postmeasurements";
 
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private final String registrationUrl;
     private final String analyticsUrl;
-    private final HttpClient client;
 
-    public AdminServerClient(String baseUrl, HttpClient client) {
+    private final HttpClientWrapper httpClientWrapper;
+
+    public AdminServerClient(String baseUrl, HttpClientWrapper httpClientWrapper) {
         this.registrationUrl = baseUrl + REGISTRATION_PATH;
         this.analyticsUrl = baseUrl + ANALYTICS_PATH;
-        this.client = client;
+        this.httpClientWrapper = httpClientWrapper;
     }
 
     public RegistrationResponse register(Player self) {
-        dtos.PlayerInfo playerInfo = new dtos.PlayerInfo(self.playerId(), self.playerListeningPort());
-
-        try {
-            HttpResponse<String> response = sendRequest(playerInfo, registrationUrl);
-
-            if (response.statusCode() != 200) {
-                translateError(response);
-            }
-            return objectMapper.readValue(response.body(), RegistrationResponse.class);
-        } catch (IOException | InterruptedException e) {
-            if (e instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-            }
-
-            System.out.println("Could not register player: " + e.getMessage());
-        } catch (Exception ex) {
-
-        }
-
-        return null;
+        PlayerInfo playerInfo = new PlayerInfo(self.playerId(), self.playerListeningPort());
+        URI uri = URI.create(registrationUrl);
+        return httpClientWrapper.postRequestWithResponse(uri, playerInfo, RegistrationResponse.class);
     }
 
     public void postMeasurements(MeasurementListDto measurementListDto) throws IOException, InterruptedException {
-        HttpResponse<String> response = sendRequest(measurementListDto, analyticsUrl);
-
-        if (response.statusCode() != 200) {
-            System.out.println(response.statusCode() + " " + response.body());
-        }
-    }
-
-    private HttpResponse<String> sendRequest(Object requestObject, String url) throws IOException, InterruptedException {
-        String requestBody = objectMapper.writeValueAsString(requestObject);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Content-Type", "application/json")
-                .header("Accept", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
-
-        return client.send(
-                request,
-                HttpResponse.BodyHandlers.ofString()
-        );
-    }
-
-    private void translateError(HttpResponse<String> response) throws IllegalAccessException {
-        if (response.statusCode() == 409) {
-            throw new IllegalAccessException();
-        }
-
-
+        URI uri = URI.create(analyticsUrl);
+        httpClientWrapper.postRequest(uri, measurementListDto);
     }
 }

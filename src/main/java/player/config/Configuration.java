@@ -1,5 +1,6 @@
 package player.config;
 
+import library.HttpClientWrapper;
 import library.ResourceHandler;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import player.client.AdminServerClient;
@@ -19,7 +20,8 @@ public class Configuration {
     public AdminServerClient createAdminServerClient() {
         String url = resourceHandler.getProperty("server.url");
         HttpClient httpClient = HttpClient.newBuilder().build();
-        return new AdminServerClient(url, httpClient);
+        HttpClientWrapper httpClientWrapper = new HttpClientWrapper(httpClient);
+        return new AdminServerClient(url, httpClientWrapper);
     }
 
     public void startMqttListener(GameState gameState, ElectionService electionService) throws MqttException {
