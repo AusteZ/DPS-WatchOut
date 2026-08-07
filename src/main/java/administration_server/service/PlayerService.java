@@ -1,7 +1,7 @@
 package administration_server.service;
 
 import Exceptions.PlayerAlreadyExistsException;
-import Exceptions.UnitializedPlayerException;
+import Exceptions.UninitializedPlayerException;
 import administration_server.repository.PlayerRepository;
 import administration_server.utils.CoordinateGeneratorUtil;
 import dtos.CoordinatesDto;
@@ -22,9 +22,8 @@ public class PlayerService {
         return new PlayersDto(playerRepository.getPlayersList());
     }
 
-    public RegistrationResponse registerPlayer(PlayerInfo player) throws PlayerAlreadyExistsException, UnitializedPlayerException {
-        if (player.listeningPort() < 0 || player.id() < 0)
-            throw new UnitializedPlayerException("ERROR: There is no (or invalid) listening port and id provided. Ids and Listening ports have to be a whole natural number.");
+    public RegistrationResponse registerPlayer(PlayerInfo player) throws PlayerAlreadyExistsException, UninitializedPlayerException {
+        validatePlayer(player);
 
         List<PlayerInfo> players = playerRepository.getPlayersList();
 
@@ -32,5 +31,11 @@ public class PlayerService {
 
         CoordinatesDto coordinates = CoordinateGeneratorUtil.generateStartingCoordinates();
         return new RegistrationResponse(players, coordinates);
+    }
+
+    private void validatePlayer(PlayerInfo player) throws UninitializedPlayerException {
+        if(player == null || player.listeningPort() < 0 || player.id() < 0){
+            throw new UninitializedPlayerException("The player was not initialized");
+        }
     }
 }

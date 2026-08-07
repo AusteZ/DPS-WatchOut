@@ -1,6 +1,6 @@
 package administration_server.repository;
 
-import Exceptions.UnitializedPlayerException;
+import Exceptions.UninitializedPlayerException;
 import dtos.MeasurementListDto;
 import dtos.MeasurementValue;
 
@@ -25,11 +25,11 @@ public class MeasurementRepository {
         }
     }
 
-    public List<MeasurementValue> getLastestMeasurements(int playerId, int count) throws UnitializedPlayerException {
+    public List<MeasurementValue> getLastestMeasurements(int playerId, int count) throws UninitializedPlayerException {
         synchronized (measurementValuesByPlayerId) {
             List<MeasurementValue> measurements = measurementValuesByPlayerId.get(playerId);
             if (measurements == null) {
-                throw new UnitializedPlayerException("No such player id found.");
+                throw new UninitializedPlayerException("No such player id found.");
             }
 
             measurements.sort(Comparator.comparingLong(MeasurementValue::timestamp));

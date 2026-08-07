@@ -1,7 +1,7 @@
 package administration_server.service;
 
 import Exceptions.NoDataRecordedException;
-import Exceptions.UnitializedPlayerException;
+import Exceptions.UninitializedPlayerException;
 import administration_server.repository.MeasurementRepository;
 import dtos.MeasurementListDto;
 import dtos.MeasurementValue;
@@ -25,7 +25,7 @@ public final class MeasurementService {
         return calculateAverage(measurements);
     }
 
-    public double calculateLatestMeasurementAverage(int playerId, int count) throws UnitializedPlayerException {
+    public double calculateLatestMeasurementAverage(int playerId, int count) throws UninitializedPlayerException {
         List<MeasurementValue> measurements = measurementRepository.getLastestMeasurements(playerId, count);
 
         return calculateAverage(measurements);
