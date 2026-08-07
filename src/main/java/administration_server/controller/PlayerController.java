@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Path("players")
-public class PlayerController {
+public final class PlayerController {
     private static final Logger LOGGER = Logger.getLogger(PlayerController.class.getName());
 
     private final PlayerService playerService;

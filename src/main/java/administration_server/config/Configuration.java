@@ -14,7 +14,7 @@ import org.glassfish.jersey.server.ServerProperties;
 import java.io.IOException;
 import java.net.URI;
 
-public class Configuration {
+public final class Configuration {
     private final ResourceHandler resourceHandler;
 
     public Configuration() {

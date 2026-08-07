@@ -10,7 +10,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
-public class HttpClientWrapper {
+public final class HttpClientWrapper {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private final HttpClient httpClient;

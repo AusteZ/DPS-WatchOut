@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CLI {
+public final class CLI {
     private static final Logger LOGGER = Logger.getLogger(CLI.class.getName());
 
     public void exit() {

@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Path("analytics")
-public class AnalyticsController {
+public final class AnalyticsController {
     private static final Logger LOGGER = Logger.getLogger(AnalyticsController.class.getName());
 
     private final MeasurementService measurementService;
